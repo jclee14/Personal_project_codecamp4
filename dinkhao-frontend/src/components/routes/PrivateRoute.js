@@ -8,7 +8,8 @@ class PrivateRoute extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      allowedRoutes: []
+      allowedRoutes: [],
+      redirectRoutes: []
     }
   }
 
@@ -16,7 +17,8 @@ class PrivateRoute extends Component {
     let role = this.props.role
     if (role) {
       this.setState({
-        allowedRoutes: rolesConfig[role].routes
+        allowedRoutes: rolesConfig[role].routes,
+        redirectRoutes: rolesConfig[role].redirect
       })
     } else {
       this.props.history.push('/login');
@@ -33,7 +35,10 @@ class PrivateRoute extends Component {
             key={route.url}
           />
         )}
-        {this.props.role == "guest" ? <Redirect to='/login' /> : null}
+{/*         {this.state.redirectRoutes.map(url =>
+          <Redirect to={url} />
+        )} */}
+        {this.props.role === "guest" ? <Redirect to='/login' /> : null}
       </>
     )
   }

@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Worker.associate = (models) => {
+    Worker.belongsToMany(models.project, { through: { model: models.projectmember, foreignKey: 'workerId' }});
     Worker.belongsToMany(models.project, { through: { model: models.work, unique: false }});
     Worker.belongsToMany(models.project, { through: { model: models.manage, unique: false }});
     Worker.belongsToMany(models.extracharge, { through: { model: models.payback, unique: false }});

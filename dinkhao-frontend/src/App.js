@@ -1,12 +1,13 @@
 import React from 'react';
 import { Switch } from 'react-router-dom'
-
+import './app.css';
 import { Layout } from 'antd';
 import NavBar from './components/navbar/NavBar'
+import SideBar from './components/navbar/SideBar'
 import PrivateRoute from './components/routes/PrivateRoute';
 import { connect } from 'react-redux'
 
-const { Header, Content } = Layout;
+const { Header, Content, Footer } = Layout;
 
 class App extends React.Component {
   render() {
@@ -14,15 +15,19 @@ class App extends React.Component {
     console.log(role)
     return (
       <div className="App">
-        <Layout>
-          <Header style={{ height: 'max-content', lineHeight: '0' }} >
-            <NavBar />
-          </Header>
-          <Content style={{ height: '95vh' }}>
-            <Switch>
-              <PrivateRoute handleAppLogin={this.login} role={role} />
-            </Switch>
-          </Content>
+        <Layout style={{ height: '100vh' }}>
+          <SideBar />
+          <Layout className="site-layout" style={{ marginLeft: 200 }}>
+            <Header className="site-layout-background" style={{ padding: 0 }} >
+                <NavBar />
+            </Header>
+            <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+              <Switch>
+                <PrivateRoute role={role} />
+              </Switch>
+            </Content>
+            <Footer style={{ textAlign: 'center' }}>DINKHAO GROUP ©2020 Created by J.C. LEE</Footer>
+          </Layout>
         </Layout>
       </div>
     )

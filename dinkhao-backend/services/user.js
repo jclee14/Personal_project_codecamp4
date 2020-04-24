@@ -108,7 +108,7 @@ module.exports = (app, db) => {
       } else {
         try {
           let result = await db.user.destroy({ where: { id: req.params.id } });
-          res.status(201).send(result);
+          res.status(200).send({ message: 'User deleted' });
         }
         catch(err) {
           console.error(err);

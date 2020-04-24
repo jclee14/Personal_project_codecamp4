@@ -41,7 +41,7 @@ module.exports = (app, db) => {
         }
       )
         .then((result) => {
-          res.status(201).send(result)
+          res.status(200).send({ message: 'Job updated' })
         })
         .catch((err) => {
           console.error(err);
@@ -58,7 +58,7 @@ module.exports = (app, db) => {
       } else {
         try {
           let result = await db.workerjob.destroy({ where: { id: req.params.id } });
-          res.status(201).send(result)
+          res.status(200).send({ message: 'Job deleted' })
         }
         catch (err) {
           console.error(err);

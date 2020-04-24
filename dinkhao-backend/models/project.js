@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Project.associate = (models) => {
     Project.belongsToMany(models.user, { through: models.administer , foreignKey: 'projectId' });
+    Project.belongsToMany(models.worker, { through: { model: models.projectmember, foreignKey: 'projectId' }});
     Project.belongsToMany(models.worker, { through: { model: models.work, unique: false }});
     Project.belongsToMany(models.worker, { through: { model: models.manage, unique: false }});
   }

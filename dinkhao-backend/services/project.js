@@ -47,7 +47,7 @@ module.exports = (app, db) => {
         }
       )
         .then((result) => {
-          res.status(201).send(result)
+          res.status(200).send({ message: 'Project updated' })
         })
         .catch((err) => {
           console.error(err);
@@ -60,7 +60,7 @@ module.exports = (app, db) => {
     function (req, res) {
       db.project.destroy({ where: { id: req.params.id } })
         .then((result) => {
-          res.status(201).send(result)
+          res.status(200).send({ message: 'Project deleted!' })
         })
         .catch((err) => {
           console.error(err);

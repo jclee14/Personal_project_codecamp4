@@ -4,6 +4,7 @@ const userService = require('./services/user');
 const administerService = require('./services/administer');
 const projectService = require('./services/project');
 const workerService = require('./services/worker');
+const projectmemberService = require('./services/projectMember');
 const workService = require('./services/work');
 const manageService = require('./services/manage');
 const workerJob = require('./services/workerJob');
@@ -34,6 +35,7 @@ db.sequelize.sync({ force: false }).then(() => {
   administerService(app, db);
   projectService(app, db);
   workerService(app, db);
+  projectmemberService(app, db);
   workService(app, db);
   manageService(app, db);
   workerJob(app, db);
