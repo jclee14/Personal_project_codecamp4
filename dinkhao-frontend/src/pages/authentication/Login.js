@@ -35,52 +35,36 @@ class Login extends React.Component {
 
     return (
       <div>
-        <Row type="flex" justify="center" align="middle" style={{ height: '100vh' }}>
-          <Col md={8} sm={12} xs={24}>
-            <img src={logo} alt="Logo Fakebook" style={{ width: '100%', paddingLeft: '24px', paddingRight: '24px', maxWidth: '400px' }}></img>
-          </Col>
-          <Col md={8} sm={12} xs={24}>
-            <Form onSubmit={this.handleSubmit} className="login-form" style={{ maxWidth: '400px', width: '100%' }}>
-              <Form.Item label="Username">
-                {getFieldDecorator('username', {
-                  rules: [
-                    {
-                      required: true,
-                      message: 'Please input your nickname!'
-                    }
-                  ],
-                })(<Input />)}
+        <Row type="flex" justify="center" align="middle" style={{ height: '100%' }}>
+          <Form onSubmit={this.handleSubmit} className="login-form" style={{ maxWidth: '400px', width: '100%' }}>
+            <Form.Item label="Username">
+              {getFieldDecorator('username', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please input your nickname!'
+                  }
+                ],
+              })(<Input />)}
+            </Form.Item>
+            <Form.Item label="Password">
+              {getFieldDecorator('password', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please input your password!',
+                  }
+                ],
+              })(<Input.Password />)}
+            </Form.Item>
+            <Row>
+              <Form.Item>
+                <Button block type="primary" htmlType="submit" className="login-form-button">
+                  Log in
+                </Button>
               </Form.Item>
-              <Form.Item label="Password">
-                {getFieldDecorator('password', {
-                  rules: [
-                    {
-                      required: true,
-                      message: 'Please input your password!',
-                    }
-                  ],
-                })(<Input.Password />)}
-              </Form.Item>
-              <Row>
-                <Col span={12}>
-                  <Form.Item>
-                    <Link to='/signup'>
-                      <Button block type="link" >
-                        Signup
-                      </Button>
-                    </Link>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item>
-                    <Button block type="primary" htmlType="submit" className="login-form-button">
-                      Log in
-                    </Button>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-          </Col>
+            </Row>
+          </Form>
         </Row >
       </div >
     )

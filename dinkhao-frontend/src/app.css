@@ -1,0 +1,54 @@
+/* @import 'antd/dist/antd.css'; */
+
+.App {
+  height: 100vh;
+  font-family: 'Roboto', sans-serif;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 64px;
+  color: white;
+  background-color: #51669D;
+  font-family: 'Roboto', sans-serif;
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+
+#user-name {
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #294694;
+}
+
+#lock-icon {
+  font-size: 20px;
+  margin-left: 15px;
+  cursor: pointer;
+  color: grey;
+}
+
+.page-header {
+  font-size: 30px;
+}
+
+.project-confirm-data {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.worker-detail-card p {
+  margin: 0;
+}
+
+.worker-profile-avatar {
+  object-fit: cover;
+  height: 150px;
+  width: auto;
+  max-width: 150px;
+}

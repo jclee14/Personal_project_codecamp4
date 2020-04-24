@@ -48,7 +48,7 @@ module.exports = (app, db) => {
               where: { id: req.params.id }
             }
           );
-          res.status(201).send(result);
+          res.status(200).send({ message: 'Record updated' });
         }
         catch (err) {
           console.error(err);
@@ -66,7 +66,7 @@ module.exports = (app, db) => {
       } else {
         try {
           let result = await db.extracharge.destroy({ where: { id: req.params.id } });
-          res.status(201).send(result);
+          res.status(201).send({ message: 'Record deleted' });
         }
         catch (err) {
           console.error(err);

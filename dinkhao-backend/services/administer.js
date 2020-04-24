@@ -36,30 +36,30 @@ module.exports = (app, db) => {
     }
   )
 
-/*   app.put('/update-administer/:userId/:projectId' , passport.authenticate('jwt', { session: false }),
-    async function (req, res) {
-      let targetAdminister = await db.administer.findOne({ where: { projectId: req.params.projectId, userId: req.params.userId } });
-      if (!targetAdminister) {
-        res.status(404).send({ message: "The record is not found!" })
-      } else {
-        try {
-          let result = db.administer.update(
-            {
-
-            },
-            {
-              where: { projectId: req.params.projectId, userId: req.params.userId }
-            }
-          );
-          res.status(201).send(result);
-        }
-        catch (err) {
-          console.error(err);
-          res.status(400).send({ message: err.message })
+  /*   app.put('/update-administer/:userId/:projectId' , passport.authenticate('jwt', { session: false }),
+      async function (req, res) {
+        let targetAdminister = await db.administer.findOne({ where: { projectId: req.params.projectId, userId: req.params.userId } });
+        if (!targetAdminister) {
+          res.status(404).send({ message: "The record is not found!" })
+        } else {
+          try {
+            let result = db.administer.update(
+              {
+  
+              },
+              {
+                where: { projectId: req.params.projectId, userId: req.params.userId }
+              }
+            );
+            res.status(201).send(result);
+          }
+          catch (err) {
+            console.error(err);
+            res.status(400).send({ message: err.message })
+          }
         }
       }
-    }
-  ) */
+    ) */
 
   app.delete('/delete-administer/:userId/:projectId', passport.authenticate('jwt', { session: false }),
     async function (req, res) {
@@ -69,7 +69,7 @@ module.exports = (app, db) => {
       } else {
         try {
           let result = await db.administer.destroy({ where: { projectId: req.params.projectId, userId: req.params.userId } });
-          res.status(201).send(result);
+          res.status(200).send({ message: 'Record deleted' });
         }
         catch (err) {
           console.error(err);
@@ -78,4 +78,23 @@ module.exports = (app, db) => {
       }
     }
   )
+
+/*   app.delete('/delete-administerByProject/:projectId', passport.authenticate('jwt', { session: false }),
+    async function (req, res) {
+      let targetAdminister = await db.administer.findOne({ where: { projectId: req.params.projectId } });
+      if (!targetAdminister) {
+        res.status(404).send({ message: "The project is not found." })
+      } else {
+        try {
+          let result = await db.administer.destroy({ where: { projectId: req.params.projectId } });
+          res.status(200).send({ message: 'Record deleted' });
+        }
+        catch (err) {
+          console.error(err);
+          res.status(400).send({ message: err.message })
+        }
+      }
+    }
+  ) */
+
 }

@@ -36,7 +36,7 @@ module.exports = (app, db) => {
           gender: req.body.gender,
           race: req.body.race,
           bank_account_id: req.body.bank_account_id,
-          image_url: pictureName === '' ? '' : `http://localhost:8080/${pictureName}`,
+          image_url: pictureName === '' ? '' : pictureName,
           phone: req.body.phone,
           isEmployed: req.body.isEmployed
         })
@@ -75,7 +75,7 @@ module.exports = (app, db) => {
               gender: req.body.gender,
               race: req.body.race,
               bank_account_id: req.body.bank_account_id,
-              image_url: pictureName === '' ? data.image_url : `http://localhost:8080/${pictureName}`,
+              image_url: pictureName === '' ? data.image_url : pictureName,
               phone: req.body.phone,
               isEmployed: req.body.isEmployed
             },
@@ -83,7 +83,7 @@ module.exports = (app, db) => {
               where: { id: req.params.id }
             }
           )
-          res.status(201).send(result)
+          res.status(200).send({ message: 'Worker updated' })
         }
         catch (err) {
           console.error(err);
@@ -101,7 +101,7 @@ module.exports = (app, db) => {
       } else {
         try {
           let result = await db.worker.destroy({ where: { id: req.params.id } });
-          res.status(201).send(result)
+          res.status(200).send({ message: 'Worker deleted' })
         }
         catch (err) {
           console.error(err);

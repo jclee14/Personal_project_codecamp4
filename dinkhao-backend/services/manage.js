@@ -55,7 +55,7 @@ module.exports = (app, db) => {
               where: { projectId: req.params.projectId, workerId: req.params.workerId }
             }
           );
-          res.status(201).send(result);
+          res.status(200).send({ message: 'Record updated' });
         }
         catch (err) {
           console.error(err);
@@ -73,7 +73,7 @@ module.exports = (app, db) => {
       } else {
         try {
           let result = await db.manage.destroy({ where: { projectId: req.params.projectId, workerId: req.params.workerId } });
-          res.status(201).send(result);
+          res.status(200).send({ message: 'Record deleted' });
         }
         catch (err) {
           console.error(err);
