@@ -1,12 +1,13 @@
 import React from 'react';
 import WorkerDetail from '../components/worker/workerDetail';
-import { Row, Col, Modal, Input, Form, Radio, Select, Button, List, Avatar, Upload, Icon } from 'antd'
+import { Row, Col, Modal, Input, Form, Radio, Select, Button, List, Avatar, Upload, Icon, Divider } from 'antd'
 import Axios from '../config/api.service'
 import { connect } from 'react-redux'
 import { UserOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 const { confirm } = Modal;
 const { Option } = Select;
+const { Search } = Input;
 
 var moment = require('moment');
 moment().format();
@@ -17,6 +18,7 @@ class WorkersComp extends React.Component {
     this.state = {
       user: {},
       workerList: [],
+      filteredWorkerList: [],
       workerId: undefined,
       fname: '',
       lname: '',
@@ -27,7 +29,8 @@ class WorkersComp extends React.Component {
       phone: '',
       isEmployed: '',
       fileList: [],
-      editVisible: false
+      editVisible: false,
+      searchInput: ''
     }
   }
 
@@ -53,7 +56,7 @@ class WorkersComp extends React.Component {
             {worker.image_url ? customAvatar : defaultAvatar}
           </Row>
           <Row>
-            <Button onClick={() => this.editModal(worker)} style={{ width: '100%', marginTop: '10px' }}>Edit Profile</Button>
+            <Button onClick={() => this.editModal(worker)} style={{ width: '100%', marginTop: '10px' }}>Edit / Delete</Button>
           </Row>
         </Col>
       </Row>
@@ -164,10 +167,14 @@ class WorkersComp extends React.Component {
     });
   };
 
+  handleSearch = (e) => {
+    this.setState({ searchInput: e.target.value.toLowerCase() });
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
-
     const { fileList } = this.state;
+    
     const props = {
       onRemove: file => {
         this.setState(state => {
@@ -188,13 +195,22 @@ class WorkersComp extends React.Component {
       fileList,
     }
 
-    //displayNotes = filteredNotes.filter(note => note.title.toLowerCase().search(searchInput) >= 0);
+    let displayWorker = this.state.workerList.filter((worker) => {
+      let fullname = `${worker.fname} ${worker.lname}`;
+      return fullname.toLowerCase().search(this.state.searchInput) >= 0;
+    });
 
     return (
       <Row>
         <Col>
           <Row style={{ margin: "0 5%" }}>
             <h1 className="page-header">Worker Database</h1>
+            <Search
+              placeholder="Search name here"
+              onChange={ this.handleSearch }
+              style={{ width: 300 }}
+            />
+            <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }} />
           </Row>
           <Row style={{ margin: "0 10%" }}>
             <List
@@ -206,7 +222,7 @@ class WorkersComp extends React.Component {
                 },
                 pageSize: 3,
               }}
-              dataSource={this.state.workerList}
+              dataSource={displayWorker}
               renderItem={worker => (
                 <List.Item
                   key={worker.id}

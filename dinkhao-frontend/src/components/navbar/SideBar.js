@@ -53,9 +53,10 @@ class SideBar extends Component {
               </span>
             }
           >
-            <Menu.Item key="7">รายการหักทั้งหมด</Menu.Item>
+            <Menu.Item key="7">
+              <a href="/extracharges"><span className="nav-text">จัดการรายการหัก</span></a>
+            </Menu.Item>
             <Menu.Item key="8">บันทึกรายการหักคนงาน</Menu.Item>
-            <Menu.Item key="9">เพิ่มหัวข้อรายการหัก</Menu.Item>
           </SubMenu>
           <SubMenu
             key="sub4"
@@ -65,11 +66,14 @@ class SideBar extends Component {
               </span>
             }
           >
-            <Menu.Item key="10">
+            <Menu.Item key="9">
               <a href="/projects"><span className="nav-text">โปรเจคทั้งหมด</span></a>
             </Menu.Item>
-            <Menu.Item key="11">
+            <Menu.Item key="10">
               <a href="/createproject"><span className="nav-text">เพิ่่มโปรเจคใหม่</span></a>
+            </Menu.Item>
+            <Menu.Item key="11">
+              <a href="/projectmembers"><span className="nav-text">คนงานประจำโปรเจค</span></a>
             </Menu.Item>
           </SubMenu>
           <SubMenu
@@ -86,6 +90,9 @@ class SideBar extends Component {
             <Menu.Item key="13">
               <a href="/createworker"><span className="nav-text">เพิ่มคนงานใหม่</span></a>
             </Menu.Item>
+            <Menu.Item key="14">
+              <a href="/workerjobs"><span className="nav-text">จัดการตำแหน่งงาน</span></a>
+            </Menu.Item>
           </SubMenu>
           <SubMenu
             key="sub6"
@@ -95,8 +102,8 @@ class SideBar extends Component {
               </span>
             }
           >
-            <Menu.Item key="14">All users</Menu.Item>
-            <Menu.Item key="15">Add new user</Menu.Item>
+            <Menu.Item key="15">All users</Menu.Item>
+            <Menu.Item key="16">Add new user</Menu.Item>
           </SubMenu>
         </Menu>
       </Sider>

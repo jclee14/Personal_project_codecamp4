@@ -4,7 +4,7 @@ module.exports = (app, db) => {
 
   app.get('/projects', passport.authenticate('jwt', { session: false }),
     function (req, res) {
-      db.project.findAll()
+      db.project.findAll({ include: [{model : db.worker}] })
         .then(result => {
           res.status(200).send(result)
         })

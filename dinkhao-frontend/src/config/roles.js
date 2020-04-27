@@ -32,6 +32,10 @@ const components = {
     component: 'Projects',
     url: '/projects'
   },
+  projectMember: {
+    component: 'ProjectMembers',
+    url: '/projectmembers'
+  },
   createWorker: {
     component: 'CreateWorker',
     url: '/createworker'
@@ -39,6 +43,14 @@ const components = {
   worker: {
     component: 'Workers',
     url: '/workers'
+  },
+  workerJob: {
+    component: 'WorkerJobs',
+    url: '/workerjobs'
+  },
+  extraCharge: {
+    component: 'ExtraCharges',
+    url: '/extracharges'
   }
 };
 
