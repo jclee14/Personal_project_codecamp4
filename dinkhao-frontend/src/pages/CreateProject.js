@@ -106,7 +106,7 @@ class CreateProjectForm extends React.Component {
       <>
         <Form
           {...layout}
-          name="basic"
+          name="project-create-form"
         >
           <Form.Item label="Project Name">
             {getFieldDecorator('projectName', {

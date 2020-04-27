@@ -15,7 +15,7 @@ class App extends React.Component {
     console.log(role)
     return (
       <div className="App">
-        <Layout style={{ height: '100vh' }}>
+        <Layout style={{ minHeight: '100vh' }}>
           <SideBar />
           <Layout className="site-layout" style={{ marginLeft: 200 }}>
             <Header className="site-layout-background" style={{ padding: 0 }} >

@@ -16,6 +16,20 @@ module.exports = (app, db) => {
     }
   )
 
+  app.get('/workers/:id', passport.authenticate('jwt',
+  { session: false }),
+  function (req, res) {
+    db.worker.findOne({ where: { id: req.params.id }})
+      .then(result => {
+        res.status(200).send(result)
+      })
+      .catch(err => {
+        console.error(err);
+        res.status(400).send({ message: err.message })
+      })
+  }
+)
+
   app.post('/create-worker', passport.authenticate('jwt', { session: false }),
     async function (req, res) {
 
