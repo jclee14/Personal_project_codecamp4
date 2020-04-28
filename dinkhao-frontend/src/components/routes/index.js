@@ -11,5 +11,6 @@ import Workers from '../../pages/Workers';
 import WorkerJobs from '../../pages/WorkerJobs';
 import ExtraCharges from '../../pages/ExtraCharges';
 import ProjectMembers from '../../pages/ProjectMembers';
+import Payback from '../../pages/Payback';
 
-export { Login, Signup, ChangePassword, Friend, Home, Profile, CreateProject, Projects, CreateWorker, Workers, WorkerJobs, ExtraCharges, ProjectMembers }
+export { Login, Signup, ChangePassword, Friend, Home, Profile, CreateProject, Projects, CreateWorker, Workers, WorkerJobs, ExtraCharges, ProjectMembers, Payback }

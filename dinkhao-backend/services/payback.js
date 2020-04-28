@@ -40,27 +40,32 @@ module.exports = (app, db) => {
 
   app.put('/update-payback/:id', passport.authenticate('jwt', { session: false }),
     async function (req, res) {
-      let targetPayback = await db.payback.findOne({ where: { id: req.params.id } });
-      if (!targetPayback) {
+      let target = await db.payback.findOne({ where: { id: req.params.id } });
+      if (!target) {
         res.status(404).send({ message: "The record is not found." })
       } else {
-        try {
-          let result = db.payback.update(
-            {
-              extrachargeId: req.body.extrachargeId,
-              workerId: req.body.workerId,
-              date: req.body.date,
-              price: req.body.price
-            },
-            {
-              where: { id: req.params.id }
-            }
-          );
-          res.status(200).send({ message: 'Record updated' });
-        }
-        catch (err) {
-          console.error(err);
-          res.status(400).send({ message: err.message })
+        let targetPayback = await db.payback.findOne({ where: { extrachargeId: req.body.extrachargeId, workerId: req.body.workerId, date: req.body.date } });
+        if (targetPayback) {
+          res.status(404).send({ message: "The charge is already recorded on the same date!" })
+        } else {
+          try {
+            let result = db.payback.update(
+              {
+                extrachargeId: req.body.extrachargeId,
+                workerId: req.body.workerId,
+                date: req.body.date,
+                price: req.body.price
+              },
+              {
+                where: { id: req.params.id }
+              }
+            );
+            res.status(200).send({ message: 'Record updated' });
+          }
+          catch (err) {
+            console.error(err);
+            res.status(400).send({ message: err.message })
+          }
         }
       }
     }

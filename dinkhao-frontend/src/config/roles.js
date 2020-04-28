@@ -51,6 +51,10 @@ const components = {
   extraCharge: {
     component: 'ExtraCharges',
     url: '/extracharges'
+  },
+  payback: {
+    component: 'Payback',
+    url: '/paybackrecords'
   }
 };
 
