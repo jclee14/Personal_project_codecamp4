@@ -56,7 +56,9 @@ class SideBar extends Component {
             <Menu.Item key="7">
               <a href="/extracharges"><span className="nav-text">จัดการรายการหัก</span></a>
             </Menu.Item>
-            <Menu.Item key="8">บันทึกรายการหักคนงาน</Menu.Item>
+            <Menu.Item key="8">
+              <a href="/paybackrecords"><span className="nav-text">บันทึกรายการหักคนงาน</span></a>
+            </Menu.Item>
           </SubMenu>
           <SubMenu
             key="sub4"
