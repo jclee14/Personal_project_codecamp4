@@ -2,8 +2,7 @@ const passport = require('passport')
 
 module.exports = (app, db) => {
 
-  app.get('/workers', passport.authenticate('jwt',
-    { session: false }),
+  app.get('/workers', passport.authenticate('jwt', { session: false }),
     function (req, res) {
       db.worker.findAll()
         .then(result => {
@@ -16,8 +15,7 @@ module.exports = (app, db) => {
     }
   )
 
-  app.get('/workers/:id', passport.authenticate('jwt',
-  { session: false }),
+  app.get('/worker/:id', passport.authenticate('jwt', { session: false }),
   function (req, res) {
     db.worker.findOne({ where: { id: req.params.id }})
       .then(result => {

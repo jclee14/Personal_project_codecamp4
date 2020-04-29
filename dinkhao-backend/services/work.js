@@ -2,10 +2,9 @@ const passport = require('passport')
 
 module.exports = (app, db) => {
 
-  app.get('/works', passport.authenticate('jwt',
-    { session: false }),
+  app.get('/works/:projectId', passport.authenticate('jwt', { session: false }),
     function (req, res) {
-      db.work.findAll()
+      db.work.findAll({ where: { projectId: req.params.projectId }})
         .then(result => {
           res.status(200).send(result)
         })
@@ -39,7 +38,7 @@ module.exports = (app, db) => {
           let result = await db.work.create({
             projectId: req.body.projectId,
             workerId: req.body.workerId,
-            workerjobId: req.body.workerjobId,
+            // workerjobId: req.body.workerjobId,
             date: req.body.date,
             current_rate: current_rate,
             normal_morning_hr: req.body.normal_morning_hr,

@@ -88,7 +88,7 @@ class ProjectMembersComp extends React.Component {
   displaySelect = () => {
     let onlyInA = this.state.workerList.filter(this.objComparer(this.state.displayMember));
     let onlyInB = this.state.displayMember.filter(this.objComparer(this.state.workerList));
-
+    console.log(onlyInA);
     let result = onlyInA.concat(onlyInB);
     this.setState({ displaySelect: result, selectWorkerId: undefined });
   }

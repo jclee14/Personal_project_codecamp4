@@ -55,6 +55,10 @@ const components = {
   payback: {
     component: 'Payback',
     url: '/paybackrecords'
+  },
+  createWork: {
+    component: 'CreateWork',
+    url: '/create-work-attendance'
   }
 };
 
