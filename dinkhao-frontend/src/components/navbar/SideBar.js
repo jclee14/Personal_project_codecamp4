@@ -10,15 +10,17 @@ class SideBar extends Component {
   render() {
     return (
       <Sider
+        width={250}
         style={{
           overflow: 'auto',
           height: '100vh',
           position: 'fixed',
           left: 0,
+          backgroundColor: '#294694'
         }}
       >
         <div className="logo"><span>DINKHAO GROUP</span></div>
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']}>
+        <Menu theme="dark" mode="inline" style={{ backgroundColor: '#294694' , color: 'white'}}>
           <Menu.Item key="1">
             <a href="/"><span className="nav-text">Homepage</span></a>
           </Menu.Item>
@@ -43,7 +45,9 @@ class SideBar extends Component {
             }
           >
             <Menu.Item key="5">ประวัติการเข้างาน</Menu.Item>
-            <Menu.Item key="6">บันทึกการเข้างาน</Menu.Item>
+            <Menu.Item key="6">
+              <a href="/create-work-attendance"><span className="nav-text">บันทึกการเข้างาน</span></a>
+            </Menu.Item>
           </SubMenu>
           <SubMenu
             key="sub3"

@@ -17,7 +17,7 @@ class App extends React.Component {
       <div className="App">
         <Layout style={{ minHeight: '100vh' }}>
           <SideBar />
-          <Layout className="site-layout" style={{ marginLeft: 200 }}>
+          <Layout className="site-layout" style={{ marginLeft: 250 }}>
             <Header className="site-layout-background" style={{ padding: 0 }} >
                 <NavBar />
             </Header>
