@@ -84,7 +84,7 @@ module.exports = (app, db) => {
         try {
           let result = db.work.update(
             {
-              workerjobId: req.body.workerjobId,
+              // workerjobId: req.body.workerjobId,
               normal_morning_hr: req.body.normal_morning_hr,
               normal_afternoon_hr: req.body.normal_afternoon_hr,
               ot_early_hr: req.body.ot_early_hr,

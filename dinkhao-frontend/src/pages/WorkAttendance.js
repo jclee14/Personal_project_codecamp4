@@ -82,7 +82,7 @@ class WorkAttendanceComp extends React.Component {
 
   genMemberCard = () => {
     let data = this.state.displayMember.map(member => (
-      <WorkerAttendance handleShowEdit={this.editModal} memberData={member} workData={this.state.workList.filter(record => record.workerId === member.id)} />
+      <WorkerAttendance handleShowEdit={this.handleModalValidation} memberData={member} workData={this.state.workList.filter(record => record.workerId === member.id)} />
     ));
     return data;
   }
@@ -120,7 +120,7 @@ class WorkAttendanceComp extends React.Component {
         let dateFilter = monthFilter.filter(record => selectDateRange === 'firstHalf' ? record.date.split("-")[2] <= 15 : record.date.split("-")[2] > 15);
         this.setState({
           workList: dateFilter
-        })
+        });
       }
       catch (err) {
         console.log(err)
@@ -178,7 +178,7 @@ class WorkAttendanceComp extends React.Component {
     );
   }
 
-  handleMonthPick = (date, dateString) => {
+  handleMonthPick = async (date, dateString) => {
     let extraD = 0;
     let month;
 
@@ -198,7 +198,7 @@ class WorkAttendanceComp extends React.Component {
       extraD = 0;
     }
 
-    this.setState({
+    await this.setState({
       selectMonth: dateString,
       hrValue: {},
       extraDate: extraD,
@@ -262,39 +262,37 @@ class WorkAttendanceComp extends React.Component {
     })
   }
 
-  editModal = (member) => {
-    let targetData = this.state.workList.filter(record => record.workerId === member.id);
-    console.log(targetData);
-    this.setState({ 
-      hrValue: targetData,
-      editVisible: true 
-    });
-    // this.setState({
-    //   projectId: record.id,
-    //   projectName: record.name,
-    //   projectLocation: record.location,
-    //   projectStartDate: record.start_date,
-    //   projectEndDate: record.end_date
-    // },
-    //   () => {
-    //     this.props.form.setFieldsValue({
-    //       projectName: this.state.projectName,
-    //       projectLocation: this.state.projectLocation,
-    //       projectStartDate: moment(this.state.projectStartDate),
-    //       projectEndDate: moment(this.state.projectEndDate)
-    //     },
-    //       () => { this.setState({ editVisible: true }) }
-    //     )
-    //   });
+  editModal = () => {
+    let { selectWorkerId } = this.state;
+    let targetData = this.state.workList.filter(record => record.workerId === selectWorkerId);
+    let objData = {};
+    for(let dayRecord of targetData) {
+      let column = dayRecord['date'].split("-");
+      let key = [parseInt(column[2]).toString() + '1', parseInt(column[2]).toString() + '2', parseInt(column[2]).toString() + '3', parseInt(column[2]).toString() + '4', parseInt(column[2]).toString() + '5', parseInt(column[2]).toString() + '6'];
+      objData = { 
+        ...objData, 
+        [key[0]]: parseFloat(dayRecord.ot_early_hr) % 1 === 0 ? Math.round(dayRecord.ot_early_hr) : parseFloat(dayRecord.ot_early_hr).toFixed(1), 
+        [key[1]]: parseFloat(dayRecord.normal_morning_hr) % 1 === 0 ? Math.round(dayRecord.normal_morning_hr) : parseFloat(dayRecord.normal_morning_hr).toFixed(1), 
+        [key[2]]: parseFloat(dayRecord.ot_noon_hr) % 1 === 0 ? Math.round(dayRecord.ot_noon_hr) : parseFloat(dayRecord.ot_noon_hr).toFixed(1), 
+        [key[3]]: parseFloat(dayRecord.normal_afternoon_hr) % 1 === 0 ? Math.round(dayRecord.normal_afternoon_hr) : parseFloat(dayRecord.normal_afternoon_hr).toFixed(1), 
+        [key[4]]: parseFloat(dayRecord.ot_evening_hr) % 1 === 0 ? Math.round(dayRecord.ot_evening_hr) : parseFloat(dayRecord.ot_evening_hr).toFixed(1), 
+        [key[5]]: parseFloat(dayRecord.ot_night_hr) % 1 === 0 ? Math.round(dayRecord.ot_night_hr) : parseFloat(dayRecord.ot_night_hr).toFixed(1)
+      };
+    }
+
+    this.setState({
+      hrValue: objData,
+      editVisible: true
+    },
+      () => this.sumHr()
+    );
   }
 
   editModelExit = () => {
     this.setState({
-      // projectId: undefined,
-      // projectName: '',
-      // projectLocation: '',
-      // projectStartDate: undefined,
-      // projectEndDate: undefined,
+      selectWorkerId: undefined,
+      hrValue: {},
+      totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' },
       editVisible: false
     });
   };
@@ -362,11 +360,20 @@ class WorkAttendanceComp extends React.Component {
 
   }
 
-  handleValidation = () => {
-    if (!this.state.selectProjectId || !this.state.selectWorkerId || !this.state.selectDateRange || !this.state.selectMonth) {
-      this.showErrorModal({ title: 'Form Incompleted', content: 'Please select every form field!' });
+  handleModalValidation = async (member) => {
+    await this.setState({ selectWorkerId : member.id });
+
+    let { selectWorkerId, workList } = this.state;
+    let month = this.state.selectMonth.split("-");
+    let targetAttendance = workList.filter(record => record.workerId === selectWorkerId);
+    console.log(targetAttendance);
+
+    if (!this.state.selectProjectId || !this.state.selectDateRange || !this.state.selectMonth) {
+      this.showErrorModal({ title: 'Inquiry Rejected!', content: 'Please select date and month first!' });
+    } else if(targetAttendance.length < 1) {
+      this.showErrorModal({ title: 'Inquiry Rejected!', content: <div><p>Your record in {this.state.monthList[parseInt(month[1]) - 1]} is invalid!</p><p>Please create new record first</p></div> });
     } else {
-      this.showConfirm();
+      this.editModal(member);
     }
   }
 
@@ -375,37 +382,41 @@ class WorkAttendanceComp extends React.Component {
       title: message.title,
       content: message.content,
     });
+    this.editModelExit();
   }
 
   showConfirm = () => {
     let month = this.state.selectMonth.split("-");
-    let { extraDate } = this.state;
+    let { extraDate, workerList, projectList, selectWorkerId, selectProjectId } = this.state;
+    let workerData = workerList.filter(worker => worker.id === selectWorkerId);
+    let projectData = projectList.filter(project => project.id === selectProjectId);
 
     confirm({
-      title: 'Do you want to create these record?',
+      title: 'Do you want to update these record?',
       icon: <ExclamationCircleOutlined />,
       content: (
         <div>
-          <p>Project: {this.state.selectProjectId}</p>
-          <p>Worker: {this.state.selectWorkerData['fname']} {this.state.selectWorkerData['lname']}</p>
+          <p>Project: {projectData[0]['name']}</p>
+          <p>Worker: {workerData[0]['fname']} {workerData[0]['lname']}</p>
           <p>Date: {this.state.selectDateRange === 'firstHalf' ? '1-15' : `16-${30 + extraDate}`} {this.state.monthList[parseInt(month[1]) - 1]} {month[0]}</p>
         </div>
       ),
       onOk: () => {
-        this.handleCreateWork()
+        this.handleUpdateWork()
       },
       onCancel: () => { },
     });
   }
 
-  handleCreateWork = async () => {
+  handleUpdateWork = async () => {
     let month = this.state.selectMonth.split("-");
     try {
       let startD;
-      let { extraDate } = this.state;
-
+      let { extraDate, selectWorkerId, workList } = this.state;
       this.state.selectDateRange === 'firstHalf' ? startD = 0 : startD = 15;
+
       for (let c = startD; c < startD + 15 + extraDate; c++) {
+        let record = workList.filter(record => record.workerId === selectWorkerId && (c+1) === parseInt(record.date.split("-")[2]) );
         let payload = new FormData();
 
         payload.append('projectId', this.state.selectProjectId);
@@ -419,19 +430,17 @@ class WorkAttendanceComp extends React.Component {
         payload.append('ot_evening_hr', this.state.hrValue[`${c + 1}5`] ? this.state.hrValue[`${c + 1}5`] : 0);
         payload.append('ot_night_hr', this.state.hrValue[`${c + 1}6`] ? this.state.hrValue[`${c + 1}6`] : 0);
 
-        let createResult = await Axios.post('/create-work', payload);
+        let createResult = await Axios.put(`update-work/${record[0]['id']}`, payload);
         console.log(createResult);
       }
     }
     catch (err) {
       console.log(err)
-      this.showErrorModal({ title: 'Create Record Incompleted', content: `Your record in ${this.state.monthList[parseInt(month[1]) - 1]} is already created!` });
+      this.showErrorModal({ title: 'Update Record Incompleted', content: 'Something is incorrect. Please contanct to developer.' });
     }
 
-    this.setState({
-      hrValue: {},
-      totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
-    });
+    this.editModelExit();
+    this.genWorkMonthly();
   }
 
   handleResetCells = () => {
@@ -489,7 +498,7 @@ class WorkAttendanceComp extends React.Component {
             </Col>
           </Row>
           <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }} />
-          <Row>
+          {/* <Row>
             <Select
               showSearch
               style={{ width: 300, marginBottom: "20px" }}
@@ -507,7 +516,7 @@ class WorkAttendanceComp extends React.Component {
                 <Option value={worker.id}>{`${worker.fname} ${worker.lname}`}</Option>
               ))}
             </Select>
-          </Row>
+          </Row> */}
           <Row>
             <Col>
               {this.genMemberCard()}
@@ -515,7 +524,7 @@ class WorkAttendanceComp extends React.Component {
             <Modal
               title="Edit Worker Attencance"
               visible={this.state.editVisible}
-              onOk={this.handleUpdate}
+              onOk={this.showConfirm}
               onCancel={this.editModelExit}
               width={960}
             >
