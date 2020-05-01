@@ -188,7 +188,7 @@ class CreateWorkForm extends React.Component {
 
   profilePic = () => {
     const defaultAvatar = <Avatar shape="square" size={200} icon={<UserOutlined />} />;
-    const customAvatar = <img className="worker-profile-avatar" alt="profile-image" src={`http://localhost:8080/${this.state.selectWorkerData.image_url}`} />;
+    const customAvatar = <img className="worker-profile-avatar workerList-avatar-size" alt="profile-image" src={`http://localhost:8080/${this.state.selectWorkerData.image_url}`} />;
     return (
       <Row type="flex" justify="end">
         {this.state.selectWorkerData.image_url ? customAvatar : defaultAvatar}
@@ -280,7 +280,7 @@ class CreateWorkForm extends React.Component {
     for (let c = startD; c < startD + 15 + extraDate; c++) {
       let children = [];
       for (let i = 0; i < 6; i++) {
-        children.push(<Row><Input name={`${c + 1}${i + 1}`} onChange={this.handleHrInput} value={this.state.hrValue[`${c + 1}${i + 1}`]} /></Row>)
+        children.push(<Row><Input name={`${c + 1}${i + 1}`} onChange={this.handleHrInput} value={this.state.hrValue[`${c + 1}${i + 1}`]} className="attendance-edit-input" /></Row>)
       }
       cell.push(<Col span={1}>{children}</Col>)
     }
