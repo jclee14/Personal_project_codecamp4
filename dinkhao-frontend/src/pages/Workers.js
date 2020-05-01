@@ -48,7 +48,7 @@ class WorkersComp extends React.Component {
 
   profilePic = (worker) => {
     const defaultAvatar = <Avatar shape="square" size={150} icon={<UserOutlined />} />;
-    const customAvatar = <img className="worker-profile-avatar" alt="profile-image" src={`http://localhost:8080/${worker.image_url}`} />;
+    const customAvatar = <img className="worker-profile-avatar workerList-avatar-size" alt="profile-image" src={`http://localhost:8080/${worker.image_url}`} />;
     return (
       <Row>
         <Col>

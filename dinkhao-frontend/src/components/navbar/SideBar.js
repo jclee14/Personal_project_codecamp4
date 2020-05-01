@@ -20,7 +20,7 @@ class SideBar extends Component {
         }}
       >
         <div className="logo"><span>DINKHAO GROUP</span></div>
-        <Menu theme="dark" mode="inline" style={{ backgroundColor: '#294694' , color: 'white'}}>
+        <Menu theme="dark" mode="inline" style={{ backgroundColor: '#294694', color: 'white' }}>
           <Menu.Item key="1">
             <a href="/"><span className="nav-text">Homepage</span></a>
           </Menu.Item>
@@ -44,7 +44,9 @@ class SideBar extends Component {
               </span>
             }
           >
-            <Menu.Item key="5">ประวัติการเข้างาน</Menu.Item>
+            <Menu.Item key="5">
+              <a href="/work-attendance"><span className="nav-text">ประวัติการเข้างาน</span></a>
+            </Menu.Item>
             <Menu.Item key="6">
               <a href="/create-work-attendance"><span className="nav-text">บันทึกการเข้างาน</span></a>
             </Menu.Item>

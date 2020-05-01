@@ -1,4 +1,5 @@
 import React from 'react'
+import WorkerAttendance from '../components/worker/workerAttendanceCard';
 import { Row, Col, Form, Input, Button, DatePicker, Modal, Select, Divider, Avatar, Card } from 'antd'
 import Axios from '../config/api.service'
 import { connect } from 'react-redux'
@@ -13,7 +14,7 @@ const { confirm } = Modal;
 const { RangePicker, MonthPicker } = DatePicker;
 
 
-class CreateWorkForm extends React.Component {
+class WorkAttendanceComp extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -31,8 +32,10 @@ class CreateWorkForm extends React.Component {
       selectMonth: undefined,
       extraDate: '',
       hrValue: {},
-      totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
+      totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' },
+      editVisible: false
     }
+    this.editModal = this.editModal.bind(this);
   }
 
   componentDidMount() {
@@ -77,6 +80,13 @@ class CreateWorkForm extends React.Component {
     this.setState({ displayMember: displayMember });
   }
 
+  genMemberCard = () => {
+    let data = this.state.displayMember.map(member => (
+      <WorkerAttendance handleShowEdit={this.editModal} memberData={member} workData={this.state.workList.filter(record => record.workerId === member.id)} />
+    ));
+    return data;
+  }
+
   getWorker = () => {
     Axios.get('/workers').then((response) => {
       this.setState({
@@ -93,22 +103,45 @@ class CreateWorkForm extends React.Component {
   //   })
   // }
 
-  // getWork = (projectId = 18) => {
-  //   Axios.get(`/works/${projectId}`).then((response) => {
-  //     this.setState({
-  //       workList: response.data
-  //     })
+  // getWorkByProject = async () => {
+  //   let response = await Axios.get(`/worksbyproject/${this.state.selectProjectId}`);
+  //   this.setState({
+  //     workList: response.data
   //   })
   // }
 
+  genWorkMonthly = async () => {
+    let { selectProjectId, selectMonth, selectDateRange } = this.state;
+    if (selectProjectId && selectMonth && selectDateRange) {
+      try {
+        let time = selectMonth.split("-");
+        let response = await Axios.get(`/worksbyproject/${selectProjectId}`);
+        let monthFilter = response.data.filter(record => record.date.split("-")[0] === time[0] && record.date.split("-")[1] === time[1]);
+        let dateFilter = monthFilter.filter(record => selectDateRange === 'firstHalf' ? record.date.split("-")[2] <= 15 : record.date.split("-")[2] > 15);
+        this.setState({
+          workList: dateFilter
+        })
+      }
+      catch (err) {
+        console.log(err)
+      }
+    } else {
+      console.log('data incompleted!')
+    }
+  }
+
   handleProjectSelect = async (value) => {
+    const myMethod = () => {
+      this.getMember(this.state.selectProjectId);
+      this.genWorkMonthly();
+    }
     if (value) {
       this.setState({
         selectProjectId: value,
         selectWorkerId: undefined,
         selectWorkerData: []
       },
-        () => this.getMember(this.state.selectProjectId)
+        myMethod
       );
     } else {
       this.setState({
@@ -140,14 +173,16 @@ class CreateWorkForm extends React.Component {
       hrValue: {},
       extraDate: extraD,
       totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
-    });
+    },
+      () => this.genWorkMonthly()
+    );
   }
 
   handleMonthPick = (date, dateString) => {
     let extraD = 0;
     let month;
 
-    if(dateString) {
+    if (dateString) {
       month = dateString.split("-");
     }
 
@@ -168,7 +203,9 @@ class CreateWorkForm extends React.Component {
       hrValue: {},
       extraDate: extraD,
       totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
-    });
+    },
+      () => this.genWorkMonthly()
+    );
   }
 
   handleWorkerSelect = (value) => {
@@ -184,16 +221,6 @@ class CreateWorkForm extends React.Component {
         selectWorkerData: []
       })
     }
-  }
-
-  profilePic = () => {
-    const defaultAvatar = <Avatar shape="square" size={200} icon={<UserOutlined />} />;
-    const customAvatar = <img className="worker-profile-avatar" alt="profile-image" src={`http://localhost:8080/${this.state.selectWorkerData.image_url}`} />;
-    return (
-      <Row type="flex" justify="end">
-        {this.state.selectWorkerData.image_url ? customAvatar : defaultAvatar}
-      </Row>
-    )
   }
 
   handleHrInput = (e) => {
@@ -235,6 +262,43 @@ class CreateWorkForm extends React.Component {
     })
   }
 
+  editModal = (member) => {
+    let targetData = this.state.workList.filter(record => record.workerId === member.id);
+    console.log(targetData);
+    this.setState({ 
+      hrValue: targetData,
+      editVisible: true 
+    });
+    // this.setState({
+    //   projectId: record.id,
+    //   projectName: record.name,
+    //   projectLocation: record.location,
+    //   projectStartDate: record.start_date,
+    //   projectEndDate: record.end_date
+    // },
+    //   () => {
+    //     this.props.form.setFieldsValue({
+    //       projectName: this.state.projectName,
+    //       projectLocation: this.state.projectLocation,
+    //       projectStartDate: moment(this.state.projectStartDate),
+    //       projectEndDate: moment(this.state.projectEndDate)
+    //     },
+    //       () => { this.setState({ editVisible: true }) }
+    //     )
+    //   });
+  }
+
+  editModelExit = () => {
+    this.setState({
+      // projectId: undefined,
+      // projectName: '',
+      // projectLocation: '',
+      // projectStartDate: undefined,
+      // projectEndDate: undefined,
+      editVisible: false
+    });
+  };
+
   genInputCell = () => {
     let totalForm = [];
     let upperR = [];
@@ -268,19 +332,19 @@ class CreateWorkForm extends React.Component {
 
     topic.push(
       <Col span={5} className="timeTag">
-        <Row style={{ backgroundColor: '#BFC7DF', paddingLeft: '10%' }}><h2>ก่อน 7.30 น.</h2></Row>
-        <Row style={{ paddingLeft: '10%' }}><h2>7.30 - 12.00 น.</h2></Row>
-        <Row style={{ backgroundColor: '#BFC7DF', paddingLeft: '10%' }}><h2>ผ่าเที่ยง</h2></Row>
-        <Row style={{ paddingLeft: '10%' }}><h2>13.00 - 17.30 น.</h2></Row>
-        <Row style={{ backgroundColor: '#BFC7DF', paddingLeft: '10%' }}><h2>ผ่าเย็น</h2></Row>
-        <Row style={{ paddingLeft: '10%' }}><h2>18.30 - 23.30 น.</h2></Row>
+        <Row style={{ backgroundColor: '#BFC7DF', paddingLeft: '10%' }}><h3>ก่อน 7.30 น.</h3></Row>
+        <Row style={{ paddingLeft: '10%' }}><h3>7.30 - 12.00 น.</h3></Row>
+        <Row style={{ backgroundColor: '#BFC7DF', paddingLeft: '10%' }}><h3>ผ่าเที่ยง</h3></Row>
+        <Row style={{ paddingLeft: '10%' }}><h3>13.00 - 17.30 น.</h3></Row>
+        <Row style={{ backgroundColor: '#BFC7DF', paddingLeft: '10%' }}><h3>ผ่าเย็น</h3></Row>
+        <Row style={{ paddingLeft: '10%' }}><h3>18.30 - 23.30 น.</h3></Row>
       </Col>
     )
 
     for (let c = startD; c < startD + 15 + extraDate; c++) {
       let children = [];
       for (let i = 0; i < 6; i++) {
-        children.push(<Row><Input name={`${c + 1}${i + 1}`} onChange={this.handleHrInput} value={this.state.hrValue[`${c + 1}${i + 1}`]} /></Row>)
+        children.push(<Row><Input name={`${c + 1}${i + 1}`} onChange={this.handleHrInput} value={this.state.hrValue[`${c + 1}${i + 1}`]} className="attendance-edit-input" /></Row>)
       }
       cell.push(<Col span={1}>{children}</Col>)
     }
@@ -290,7 +354,7 @@ class CreateWorkForm extends React.Component {
     }
     result.push(<Col span={2} ><Row type="flex" justify="center">{resultChild}</Row></Col>)
 
-    belowR.push(<Row type="flex" gutter={16}>{topic}{cell}{result}<Col span={1}></Col></Row>);
+    belowR.push(<Row type="flex" gutter={8}>{topic}{cell}{result}<Col span={1}></Col></Row>);
 
     totalForm.push(<Col>{upperR}{belowR}</Col>)
 
@@ -371,7 +435,7 @@ class CreateWorkForm extends React.Component {
   }
 
   handleResetCells = () => {
-    this.setState({ 
+    this.setState({
       hrValue: {},
       totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
     });
@@ -387,7 +451,7 @@ class CreateWorkForm extends React.Component {
           <Row>
             <Col>
               <Row>
-                <h1 className="page-header">Create Worker Attendance</h1>
+                <h1 className="page-header">Worker Attendance</h1>
               </Row>
               <Row type="flex" align-items="left" align="middle" >
                 <Select
@@ -426,59 +490,37 @@ class CreateWorkForm extends React.Component {
           </Row>
           <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }} />
           <Row>
-            <Col span={6}>
-              <Row>
-                <Select
-                  showSearch
-                  style={{ width: 200, marginRight: '20px' }}
-                  placeholder="Select worker here"
-                  optionFilterProp="children"
-                  onChange={this.handleWorkerSelect}
-                  onSearch={this.handleSearch}
-                  value={this.state.selectWorkerId}
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  <Option value={undefined}>Select worker here</Option>
-                  {this.state.displayMember.map((worker) => (
-                    <Option value={worker.id}>{`${worker.fname} ${worker.lname}`}</Option>
-                  ))}
-                </Select>
-              </Row>
-            </Col>
-            <Col span={18}>
-              <Card bodyStyle={{ padding: '10px 30px' }} justify="space-around" className="worker-detail-card" >
-                <Row>
-                  <Col span={12}>
-                    <Row>
-                      <p className="brief-worker-info">Name: <span>{`${selectWorkerData.fname ? selectWorkerData.fname : ''} ${selectWorkerData.lname ? selectWorkerData.lname : ''}`}</span></p>
-                    </Row>
-                    <Row>
-                      <p className="brief-worker-info">Wage: <span>{selectWorkerData.wage_rate}</span></p>
-                    </Row>
-                    <Row>
-                      <p className="brief-worker-info">Race: <span>{selectWorkerData.race}</span></p>
-                    </Row>
-                  </Col>
-                  <Col span={12}>
-                    {this.profilePic()}
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
+            <Select
+              showSearch
+              style={{ width: 300, marginBottom: "20px" }}
+              placeholder="Please Select Worker Name"
+              optionFilterProp="children"
+              onChange={this.handleWorkerSelect}
+              onSearch={this.handleSearch}
+              value={this.state.selectWorkerId}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              <Option value={undefined}>Select worker here</Option>
+              {this.state.displayMember.map((worker) => (
+                <Option value={worker.id}>{`${worker.fname} ${worker.lname}`}</Option>
+              ))}
+            </Select>
           </Row>
-          <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }} />
           <Row>
             <Col>
-              <Row style={{ backgroundColor: 'white', padding: '15px 0' }}>
-                {this.state.selectDateRange ? this.genInputCell() : null}
-              </Row>
-              <Row type='flex' justify='center' style={{ marginTop: '30px' }}>
-                <Button onClick={this.handleResetCells} type="danger" size="large" style={{ width: '20%', marginRight: '10px' }}>Reset</Button>
-                <Button onClick={this.handleValidation} type="primary" size="large" style={{ width: '20%', marginLeft: '10px' }}>Submit</Button>
-              </Row>
+              {this.genMemberCard()}
             </Col>
+            <Modal
+              title="Edit Worker Attencance"
+              visible={this.state.editVisible}
+              onOk={this.handleUpdate}
+              onCancel={this.editModelExit}
+              width={960}
+            >
+              {this.state.selectDateRange ? this.genInputCell() : null}
+            </Modal>
           </Row>
         </Col>
       </Row>
@@ -492,6 +534,6 @@ const mapStateToProps = (state) => {
   }
 }
 
-const CreateWork = Form.create()(CreateWorkForm)
+const WorkAttendance = Form.create()(WorkAttendanceComp)
 
-export default connect(mapStateToProps, null)(CreateWork)
+export default connect(mapStateToProps, null)(WorkAttendance)

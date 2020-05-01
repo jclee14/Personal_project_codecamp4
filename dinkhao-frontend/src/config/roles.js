@@ -59,6 +59,10 @@ const components = {
   createWork: {
     component: 'CreateWork',
     url: '/create-work-attendance'
+  },
+  workattendance: {
+    component: 'WorkAttendance',
+    url: '/work-attendance'
   }
 };
 
