@@ -19,7 +19,6 @@ class CreatePaybackForm extends React.Component {
       extraChargeList: [],
       paybackList: [],
       displayList: [],
-
       paybackId: undefined,
       selectWorkerId: undefined,
       selectWorkerName: '',
@@ -28,7 +27,6 @@ class CreatePaybackForm extends React.Component {
       amount: '',
       date: undefined,
       modelVisible: false,
-
       editVisible: false,
       editPaybackId: undefined,
       editExtraChargeId: undefined,
@@ -41,15 +39,15 @@ class CreatePaybackForm extends React.Component {
 
   componentDidMount() {
     this.getWorker();
-    this.getExtraCharge();
-    this.getPayback();
   }
 
   getWorker = () => {
     Axios.get('/workers').then((response) => {
       this.setState({
         workerList: response.data
-      })
+      },
+        () => this.getExtraCharge()
+      )
     })
   }
 
@@ -57,7 +55,9 @@ class CreatePaybackForm extends React.Component {
     Axios.get('/extracharges').then((response) => {
       this.setState({
         extraChargeList: response.data
-      })
+      },
+        () => this.getPayback()
+      )
     })
   }
 
@@ -72,18 +72,19 @@ class CreatePaybackForm extends React.Component {
   }
 
   getDataSource = () => {
-    let data = this.state.paybackList.map(item => {
+    let data = this.state.paybackList.map((item) => {
       var workerId = item.workerId;
       var extraChargeId = item.extrachargeId;
       let targetWorker = this.state.workerList.filter(worker => workerId === worker.id);
       let targetTask = this.state.extraChargeList.filter(task => extraChargeId === task.id);
+      console.log(targetTask)
       return {
         ...item,
         name: targetWorker[0]['fname'] + ' ' + targetWorker[0]['lname'],
         task: targetTask[0]['task']
       }
     })
-    this.setState({ displayList: data })
+    this.setState({ displayList: data });
   }
 
   handleWorkerSelect = (value) => {
@@ -237,13 +238,13 @@ class CreatePaybackForm extends React.Component {
         payload.append('extrachargeId', this.state.editExtraChargeId);
         payload.append('date', this.state.editDate);
         payload.append('price', this.state.editAmount);
-  
+
         let updateResult = await Axios.put(`/update-payback/${this.state.editPaybackId}`, payload);
         console.log(updateResult);
         this.getPayback();
         this.editModelExit();
       }
-      catch(err) {
+      catch (err) {
         console.log(err.message);
         this.editModelExit();
         this.showErrorModal('Cannot create duplicated record!');

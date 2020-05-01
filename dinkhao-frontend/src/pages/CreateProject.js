@@ -104,56 +104,60 @@ class CreateProjectForm extends React.Component {
 
     return (
       <>
-        <Form
-          {...layout}
-          name="project-create-form"
-        >
-          <Form.Item label="Project Name">
-            {getFieldDecorator('projectName', {
-              onChange: this.handleChange
-            })(
-              <Input />
-            )}
-          </Form.Item>
+        <Row>
+          <Col span={20}>
+            <Form
+              {...layout}
+              name="project-create-form"
+            >
+              <Form.Item label="Project Name">
+                {getFieldDecorator('projectName', {
+                  onChange: this.handleChange
+                })(
+                  <Input />
+                )}
+              </Form.Item>
 
-          <Form.Item label="Location">
-            {getFieldDecorator('projectLocation', {
-              onChange: this.handleChange
-            })(
-              <Input />
-            )}
-          </Form.Item>
+              <Form.Item label="Location">
+                {getFieldDecorator('projectLocation', {
+                  onChange: this.handleChange
+                })(
+                  <Input />
+                )}
+              </Form.Item>
 
-          <Form.Item label="Start Date">
-            {getFieldDecorator('projectStartDate')(
-              <DatePicker onChange={(value) => this.handleDatePick("projectStartDate", value)} />
-            )}
-          </Form.Item>
+              <Form.Item label="Start Date">
+                {getFieldDecorator('projectStartDate')(
+                  <DatePicker onChange={(value) => this.handleDatePick("projectStartDate", value)} />
+                )}
+              </Form.Item>
 
-          <Form.Item label="End Date">
-            {getFieldDecorator('projectEndDate')(
-              <DatePicker onChange={(value) => this.handleDatePick("projectEndDate", value)} />
-            )}
-          </Form.Item>
+              <Form.Item label="End Date">
+                {getFieldDecorator('projectEndDate')(
+                  <DatePicker onChange={(value) => this.handleDatePick("projectEndDate", value)} />
+                )}
+              </Form.Item>
 
-          <Form.Item {...tailLayout}>
-            <Button onClick={this.formValidation}>
-              Submit
+              <Form.Item {...tailLayout}>
+                <Button onClick={this.formValidation}>
+                  Submit
           </Button>
-          </Form.Item>
-        </Form>
-        
-        <Modal
-          title="Create Project Confirmation"
-          visible={this.state.modelVisible}
-          onOk={this.handleCreateProject}
-          onCancel={this.handleCancel}
-        >
-          <p>Name:{'\u00A0'} <span className="project-confirm-data">{this.state.projectName}</span></p>
-          <p>Location:{'\u00A0'} <span className="project-confirm-data">{this.state.projectLocation}</span></p>
-          <p>Start date:{'\u00A0'} <span className="project-confirm-data">{this.state.projectStartDate}</span></p>
-          <p>End date:{'\u00A0'} <span className="project-confirm-data">{this.state.projectEndDate}</span></p>
-        </Modal>
+              </Form.Item>
+            </Form>
+
+            <Modal
+              title="Create Project Confirmation"
+              visible={this.state.modelVisible}
+              onOk={this.handleCreateProject}
+              onCancel={this.handleCancel}
+            >
+              <p>Name:{'\u00A0'} <span className="project-confirm-data">{this.state.projectName}</span></p>
+              <p>Location:{'\u00A0'} <span className="project-confirm-data">{this.state.projectLocation}</span></p>
+              <p>Start date:{'\u00A0'} <span className="project-confirm-data">{this.state.projectStartDate}</span></p>
+              <p>End date:{'\u00A0'} <span className="project-confirm-data">{this.state.projectEndDate}</span></p>
+            </Modal>
+          </Col>
+        </Row>
       </>
     )
   }
