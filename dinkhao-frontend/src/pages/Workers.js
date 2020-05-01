@@ -229,7 +229,7 @@ class WorkersComp extends React.Component {
                   extra={this.profilePic(worker)}
                 >
                   <List.Item.Meta
-                    title={`${worker.fname} ${worker.lname}`}
+                    title={<h2 style={{ color: '#1F346D'}}>{worker.fname} {worker.lname}</h2>}
                   />
                   <WorkerDetail workerData={worker} />
                 </List.Item>
