@@ -63,6 +63,10 @@ const components = {
   workattendance: {
     component: 'WorkAttendance',
     url: '/work-attendance'
+  },
+  generalAccounting: {
+    component: 'GeneralAccounting',
+    url: '/general-accounting'
   }
 };
 

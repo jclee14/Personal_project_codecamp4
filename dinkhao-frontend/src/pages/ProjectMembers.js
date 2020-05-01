@@ -118,7 +118,7 @@ class ProjectMembersComp extends React.Component {
   }
 
   showAddConfirm = async () => {
-    let result = await Axios.get(`/workers/${this.state.selectWorkerId}`);
+    let result = await Axios.get(`/worker/${this.state.selectWorkerId}`);
     confirm({
       title: 'Do you want to ADD this member?',
       icon: <ExclamationCircleOutlined />,
@@ -140,13 +140,19 @@ class ProjectMembersComp extends React.Component {
   }
 
   handleAdd = async () => {
-    let payload = new FormData();
+    try {
+      let payload = new FormData();
 
-    payload.append('projectId', this.state.selectProjectId);
-    payload.append('workerId', this.state.selectWorkerId);
-
-    let result = await Axios.post('/create-projectmember', payload);
-
+      payload.append('projectId', this.state.selectProjectId);
+      payload.append('workerId', this.state.selectWorkerId);
+  
+      let result = await Axios.post('/create-projectmember', payload);
+      console.log(result);
+  
+    }
+    catch(err) {
+      console.log(err)
+    }
     this.setState({
       selectWorkerId: undefined
     },

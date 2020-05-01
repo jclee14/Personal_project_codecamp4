@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Input, Button, Modal, Radio, Upload, Icon, Select } from 'antd'
+import { Row, Col, Form, Input, Button, Modal, Radio, Upload, Icon, Select } from 'antd'
 import Axios from '../config/api.service'
 import { connect } from 'react-redux'
 
@@ -140,119 +140,123 @@ class CreateWorkerForm extends React.Component {
 
     return (
       <>
-        <Form
-          {...layout}
-          name="worker-form"
-        >
-          <Form.Item label="First Name">
-            {getFieldDecorator('fname', {
-              rules: [{ required: true, message: 'Please enter worker\'s first name' }],
-              onChange: this.handleChange
-            })(
-              <Input />
-            )}
-          </Form.Item>
+        <Row>
+          <Col span={20}>
+            <Form
+              {...layout}
+              name="worker-form"
+            >
+              <Form.Item label="First Name">
+                {getFieldDecorator('fname', {
+                  rules: [{ required: true, message: 'Please enter worker\'s first name' }],
+                  onChange: this.handleChange
+                })(
+                  <Input />
+                )}
+              </Form.Item>
 
-          <Form.Item label="Last Name">
-            {getFieldDecorator('lname', {
-              onChange: this.handleChange
-            })(
-              <Input />
-            )}
-          </Form.Item>
+              <Form.Item label="Last Name">
+                {getFieldDecorator('lname', {
+                  onChange: this.handleChange
+                })(
+                  <Input />
+                )}
+              </Form.Item>
 
-          <Form.Item label="Wage Rate">
-            {getFieldDecorator('wage_rate', {
-              rules: [{ required: true, message: 'Please enter worker\'s wage rate' }],
-              onChange: this.handleChange
-            })(
-              <Input />
-            )}
-          </Form.Item>
+              <Form.Item label="Wage Rate">
+                {getFieldDecorator('wage_rate', {
+                  rules: [{ required: true, message: 'Please enter worker\'s wage rate' }],
+                  onChange: this.handleChange
+                })(
+                  <Input />
+                )}
+              </Form.Item>
 
-          <Form.Item label="Gender">
-            {getFieldDecorator('gender', {
-              onChange: this.handleRadio
-            })(
-              <Radio.Group name='gender'>
-                <Radio.Button value="male">Male</Radio.Button>
-                <Radio.Button value="female">Female</Radio.Button>
-              </Radio.Group>
-            )}
-          </Form.Item>
+              <Form.Item label="Gender">
+                {getFieldDecorator('gender', {
+                  onChange: this.handleRadio
+                })(
+                  <Radio.Group name='gender'>
+                    <Radio.Button value="male">Male</Radio.Button>
+                    <Radio.Button value="female">Female</Radio.Button>
+                  </Radio.Group>
+                )}
+              </Form.Item>
 
-          <Form.Item label="Race">
-            {getFieldDecorator('race', {
-              onChange: this.handleChange
-            })(
-              <Input />
-            )}
-          </Form.Item>
+              <Form.Item label="Race">
+                {getFieldDecorator('race', {
+                  onChange: this.handleChange
+                })(
+                  <Input />
+                )}
+              </Form.Item>
 
-          <Form.Item label="Bank Account ID">
-            {getFieldDecorator('bank_account_id', {
-              onChange: this.handleChange
-            })(
-              <Input />
-            )}
-          </Form.Item>
+              <Form.Item label="Bank Account ID">
+                {getFieldDecorator('bank_account_id', {
+                  onChange: this.handleChange
+                })(
+                  <Input />
+                )}
+              </Form.Item>
 
-          <Form.Item label="Phone">
-            {getFieldDecorator('phone', {
-              onChange: this.handleChange
-            })(
-              <Input />
-            )}
-          </Form.Item>
+              <Form.Item label="Phone">
+                {getFieldDecorator('phone', {
+                  onChange: this.handleChange
+                })(
+                  <Input />
+                )}
+              </Form.Item>
 
-          <Form.Item
-            label="Profile Image"
-          >
-            {getFieldDecorator('photoPost', {
-            })(
-              <Upload {...props}>
-                <Button>
-                  <Icon type="upload" /> Select File
+              <Form.Item
+                label="Profile Image"
+              >
+                {getFieldDecorator('photoPost', {
+                })(
+                  <Upload {...props}>
+                    <Button>
+                      <Icon type="upload" /> Select File
               </Button>
-              </Upload>
-            )}
-          </Form.Item>
+                  </Upload>
+                )}
+              </Form.Item>
 
-          <Form.Item label="Work Status">
-            {getFieldDecorator('isEmployed', {
-              onChange: this.handleSelect,
-              initialValue: '1'
-            })(
-              <Select style={{ width: 120 }}>
-                <Option value="1">Employed</Option>
-                <Option value="0">Unemployed</Option>
-              </Select>
-            )}
-          </Form.Item>
+              <Form.Item label="Work Status">
+                {getFieldDecorator('isEmployed', {
+                  onChange: this.handleSelect,
+                  initialValue: '1'
+                })(
+                  <Select style={{ width: 120 }}>
+                    <Option value="1">Employed</Option>
+                    <Option value="0">Unemployed</Option>
+                  </Select>
+                )}
+              </Form.Item>
 
-          <Form.Item {...tailLayout}>
-            <Button onClick={this.formValidation}>
-              Submit
-          </Button>
-          </Form.Item>
+              <Form.Item {...tailLayout}>
+                <Button onClick={this.formValidation}>
+                  Submit
+                </Button>
+              </Form.Item>
 
-        </Form>
+            </Form>
 
-        <Modal
-          title="Create Worker Confirmation"
-          visible={this.state.modelVisible}
-          onOk={this.handleCreateProject}
-          onCancel={this.handleCancel}
-        >
-          <p>First Name:{'\u00A0'} <span className="project-confirm-data">{ this.state.fname }</span></p>
-          <p>Last Name:{'\u00A0'} <span className="project-confirm-data">{ this.state.lname }</span></p>
-          <p>Wage Rate:{'\u00A0'} <span className="project-confirm-data">{ this.state.wage_rate }</span></p>
-          <p>Gender:{'\u00A0'} <span className="project-confirm-data">{ this.state.gender }</span></p>
-          <p>Race:{'\u00A0'} <span className="project-confirm-data">{ this.state.race }</span></p>
-          <p>Bank Account ID:{'\u00A0'} <span className="project-confirm-data">{ this.state.bank_account_id }</span></p>
-          <p>Phone:{'\u00A0'} <span className="project-confirm-data">{ this.state.phone }</span></p>
-          <p>Work Status:{'\u00A0'} <span className="project-confirm-data">{ this.state.isEmployed === '1' ? 'Employed' : 'Unemployed' }</span></p>
-        </Modal>
+            <Modal
+              title="Create Worker Confirmation"
+              visible={this.state.modelVisible}
+              onOk={this.handleCreateProject}
+              onCancel={this.handleCancel}
+            >
+              <p>First Name:{'\u00A0'} <span className="project-confirm-data">{this.state.fname}</span></p>
+              <p>Last Name:{'\u00A0'} <span className="project-confirm-data">{this.state.lname}</span></p>
+              <p>Wage Rate:{'\u00A0'} <span className="project-confirm-data">{this.state.wage_rate}</span></p>
+              <p>Gender:{'\u00A0'} <span className="project-confirm-data">{this.state.gender}</span></p>
+              <p>Race:{'\u00A0'} <span className="project-confirm-data">{this.state.race}</span></p>
+              <p>Bank Account ID:{'\u00A0'} <span className="project-confirm-data">{this.state.bank_account_id}</span></p>
+              <p>Phone:{'\u00A0'} <span className="project-confirm-data">{this.state.phone}</span></p>
+              <p>Work Status:{'\u00A0'} <span className="project-confirm-data">{this.state.isEmployed === '1' ? 'Employed' : 'Unemployed'}</span></p>
+            </Modal>
+          </Col>
+        </Row>
       </>
     )
   }
@@ -260,7 +264,7 @@ class CreateWorkerForm extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user
+          user: state.user
   }
 }
 
