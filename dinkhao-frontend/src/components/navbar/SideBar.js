@@ -19,7 +19,7 @@ class SideBar extends Component {
           backgroundColor: '#294694'
         }}
       >
-        <div className="logo"><a href="/" style={{ textDecoration: 'none' }}><span>DINKHAO GROUP</span></a></div>
+        <div className="logo"><a href="/"><span>DINKHAO GROUP</span></a></div>
         <Menu theme="dark" mode="inline" style={{ backgroundColor: '#294694', color: 'white' }}>
           <Menu.Item key="1">
             <a href="/"><span className="nav-text">Homepage</span></a>

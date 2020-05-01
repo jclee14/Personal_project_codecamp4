@@ -5,6 +5,20 @@
   font-family: 'Roboto', sans-serif;
 }
 
+#welcome h1 {
+  font-size: 2em;
+  color: #294694;
+  font-family: 'Roboto', sans-serif;
+}
+
+#instruction-list {
+  color: #294694 !important;
+}
+
+#instruction-list li {
+  font-size: 1.3em ;
+}
+
 .logo {
   display: flex;
   justify-content: center;
@@ -13,6 +27,13 @@
   color: white;
   background-color: #51669D;
   font-family: 'Roboto', sans-serif;
+  font-size: 1.3em;
+  font-weight: 500;
+}
+
+.logo a {
+  text-decoration: none;
+  color: white;
 }
 
 .site-layout .site-layout-background {
@@ -45,6 +66,13 @@
 
 .worker-detail-card p {
   margin: 0;
+  color: #1F346D;
+
+}
+
+.worker-detail-card span {
+  font-size: 1.5em;
+  margin-left: 10px;
 }
 
 .worker-profile-avatar {

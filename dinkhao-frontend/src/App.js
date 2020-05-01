@@ -26,7 +26,7 @@ class App extends React.Component {
                 <PrivateRoute role={role} />
               </Switch>
             </Content>
-            <Footer style={{ textAlign: 'center' }}>DINKHAO GROUP ©2020 Created by J.C. LEE</Footer>
+            <Footer style={{ textAlign: 'center' }}>DINKHAO GROUP ©2020 Created by J.C. LEE | Educated by Codecamp Thailand #4</Footer>
           </Layout>
         </Layout>
       </div>
