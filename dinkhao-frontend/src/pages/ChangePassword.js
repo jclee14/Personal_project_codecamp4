@@ -1,25 +1,64 @@
-import React from 'react'
-import HeadFakebook from '../components/author/HeadFakebook'
-import { Row, Col, Divider, Input, Icon, Button, Form } from 'antd'
+import React from 'react';
+import { Row, Col, Divider, Input, Icon, Button, Form, Modal } from 'antd';
+import { connect } from 'react-redux';
+import Axios from '../config/api.service';
+import { withRouter } from 'react-router-dom';
+import { logout } from '../redux/actions/actions'
 
-export default class ChangePassword extends React.Component {
+class ChangePasswordForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      imageSrc: "https://scontent.fbkk22-3.fna.fbcdn.net/v/t1.0-9/71561886_1609849782479256_2419419055669641216_n.jpg?_nc_cat=111&_nc_eui2=AeGGEac45Y7P61v-juKLihSuqQvzyZAUvy9dz3sSynbKiBRLT6lgXhjtX5jjtNAY9MSDoejoGIsDoajvZuQbEsl64swyCN-293Zo2K_d4tRtLw&_nc_oc=AQnKNnIYBPW5aLIzcAhWJ2OrZZN-2HCc5yDfjONO_xau-OVSNZ2MiGhybKrEeToeLgw&_nc_ht=scontent.fbkk22-3.fna&oh=ba6de0084eebf847928c72be1a7551dd&oe=5E4F2B50",
-      name: "Nuttachai Kulthammanit"
+      user: {}
     }
   }
+
+  componentDidMount() {
+    this.setState({
+      user: {
+        id: this.props.user.id,
+        name: this.props.user.name
+      }
+    })
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (values.newPassword !== values.repassword) {
+        this.error({title: 'Password Changing Incompleted!', content: 'Your new password and confirmed password is different.'});
+        this.props.form.resetFields();
+      } else if (!err) {
+        Axios.put('/change-password', {
+          oldPassword: values.oldPassword,
+          newPassword: values.newPassword
+        })
+          .then(result => {
+            this.props.logout()
+            this.props.history.push('/login')
+            window.location.reload(true);
+          })
+          .catch(err => {
+            console.error(err);
+            this.error({title: 'Password Changing Incompleted!', content: 'Your old password is incorrect.'})
+            this.props.form.resetFields()
+          })
+      }
+    });
+  }
+
+  error = (message) => {
+    Modal.error({
+      title: message.title,
+      content: message.content
+    });
+  }
+
   render() {
+    const { getFieldDecorator } = this.props.form;
     return (
       <Row>
         <Col>
-          <Row type="flex" justify="center">
-            <HeadFakebook
-              imageSrc={this.state.imageSrc}
-              name={this.state.name}
-            />
-          </Row>
           <Row type="flex" justify="center">
             <Col md={18} sm={20} xs={22}>
               <Divider />
@@ -30,29 +69,56 @@ export default class ChangePassword extends React.Component {
               <Form onSubmit={this.handleSubmit} className="login-form" style={{ maxWidth: '400px', width: '100%' }}>
                 <Row>
                   <Form.Item>
-                    <Input
-                      prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      type="password"
-                      placeholder="Old Password"
-                    />
+                    {getFieldDecorator('oldPassword', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your old password!'
+                        }
+                      ],
+                    })(
+                      <Input
+                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        type="password"
+                        placeholder="Old Password"
+                      />
+                    )}
                   </Form.Item>
                   <Form.Item>
-                    <Input
-                      prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      type="password"
-                      placeholder="New Password"
-                    />
+                    {getFieldDecorator('newPassword', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your new password!'
+                        }
+                      ],
+                    })(
+                      <Input
+                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        type="password"
+                        placeholder="New Password"
+                      />
+                    )}
                   </Form.Item>
                   <Form.Item>
-                    <Input
-                      prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      type="password"
-                      placeholder="Confirm New password"
-                    />
+                    {getFieldDecorator('repassword', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please confirm your password!'
+                        }
+                      ],
+                    })(
+                      <Input
+                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        type="password"
+                        placeholder="Confirm New password"
+                      />
+                    )}
                   </Form.Item>
                 </Row>
                 <Row type="flex" justify="center">
-                  <Col md={8} sm={12} xs={24}>
+                  <Col span={24}>
                     <Form.Item>
                       <Button block type="primary" htmlType="submit" className="login-form-button">
                         Change password
@@ -68,3 +134,16 @@ export default class ChangePassword extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
+const mapDispatchToProps = {
+  logout: logout
+}
+
+const ChangePassword = Form.create({ name: 'login' })(ChangePasswordForm);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ChangePassword))

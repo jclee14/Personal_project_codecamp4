@@ -358,6 +358,7 @@ class CreateWorkForm extends React.Component {
         let createResult = await Axios.post('/create-work', payload);
         console.log(createResult);
       }
+      this.successModal();
     }
     catch (err) {
       console.log(err)
@@ -367,6 +368,12 @@ class CreateWorkForm extends React.Component {
     this.setState({
       hrValue: {},
       totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
+    });
+  }
+
+  successModal = () => {
+    Modal.success({
+      content: 'Record Created!',
     });
   }
 

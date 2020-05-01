@@ -1,11 +1,50 @@
-import React from 'react'
-import { Row, Form, Icon, Input, Col, Button } from 'antd'
-import logo from '../../images/logo.png'
+import React from 'react';
+import { Row, Form, Icon, Input, Col, Button, Modal } from 'antd';
+import logo from '../../images/dk_logo1.jpg';
+import jwtDecode from 'jwt-decode';
+import { connect } from 'react-redux';
+import Axios from '../../config/api.service';
 
-export default class Signup extends React.Component {
+class SignupForm extends React.Component {
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (values.password !== values.repassword) {
+        this.error({title: 'Sign-up Incompleted!', content: 'Your password and confirmed password is different.'});
+        this.props.form.resetFields('password');
+        this.props.form.resetFields('repassword');
+      } else if (!err) {
+        Axios.post('/registerUser', {
+          username: values.username,
+          password: values.password,
+          name: values.name
+        })
+          .then(result => {
+            console.log(result);
+            this.props.history.push('/login')
+            window.location.reload(true);
+          })
+          .catch(err => {
+            console.error(err);
+            this.error({title: 'Sign-up Incompleted!', content: 'Your username is unavailable.'});
+            this.props.form.resetFields()
+          })
+      }
+    });
+  }
+
+  error = (message) => {
+    Modal.error({
+      title: message.title,
+      content: message.content
+    });
+  }
+
+
   render() {
+    const { getFieldDecorator } = this.props.form;
     return (
-      <Row type="flex" style={{ height: '100vh' }} align="middle">
+      <Row type="flex" style={{ marginTop: '5vh' }} align="middle">
         <Col span={24} >
           <Row type="flex" justify="center" align="middle">
             <Col md={8} sm={12} xs={24} type="flex" justify="center" align="middle">
@@ -16,31 +55,67 @@ export default class Signup extends React.Component {
             <Col md={8} sm={12} xs={24} type="flex" justify="center" align="middle">
               <Form onSubmit={this.handleSubmit} className="login-form" style={{ maxWidth: '400px', width: '100%' }}>
                 <Row>
-                  <Form.Item>
-                    <Input
-                      prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="Username"
-                    />
+                  <Form.Item label="Username">
+                    {getFieldDecorator('username', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your username!'
+                        }
+                      ],
+                    })(
+                      <Input
+                        prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        placeholder="Username"
+                      />
+                    )}
                   </Form.Item>
                   <Form.Item>
-                    <Input
-                      prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      type="password"
-                      placeholder="Password"
-                    />
+                    {getFieldDecorator('password', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your password!'
+                        }
+                      ],
+                    })(
+                      <Input
+                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        type="password"
+                        placeholder="Password"
+                      />
+                    )}
                   </Form.Item>
                   <Form.Item>
-                    <Input
-                      prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      type="password"
-                      placeholder="Confirm password"
-                    />
+                    {getFieldDecorator('repassword', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please re-enter your password!'
+                        }
+                      ],
+                    })(
+                      <Input
+                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        type="password"
+                        placeholder="Confirm password"
+                      />
+                    )}
                   </Form.Item>
                   <Form.Item>
-                    <Input
-                      prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="Name"
-                    />
+                    {getFieldDecorator('name', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your name!'
+                        }
+                      ],
+                    })(
+                      <Input
+                        prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        placeholder="Name"
+                      />
+                    )}
                   </Form.Item>
                 </Row>
                 <Row type="flex" justify="center">
@@ -60,3 +135,6 @@ export default class Signup extends React.Component {
     )
   }
 }
+
+const Signup = Form.create({ name: 'login' })(SignupForm);
+export default connect(null, null)(Signup)

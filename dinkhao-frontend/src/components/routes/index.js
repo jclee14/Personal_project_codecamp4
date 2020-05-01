@@ -1,9 +1,7 @@
 import Login from '../../pages/authentication/Login';
 import Signup from '../../pages/authentication/Signup';
 import ChangePassword from '../../pages/ChangePassword';
-import Friend from '../../pages/Friends';
 import Home from '../../pages/Home';
-import Profile from '../../pages/Profile';
 import CreateProject from '../../pages/CreateProject';
 import Projects from '../../pages/Projects';
 import CreateWorker from '../../pages/CreateWorker';
@@ -15,14 +13,13 @@ import Payback from '../../pages/Payback';
 import CreateWork from '../../pages/CreateWork';
 import WorkAttendance from '../../pages/WorkAttendance';
 import GeneralAccounting from '../../pages/GeneralAccounting';
+import WorkerAccounting from '../../pages/WorkerAccounting';
 
 export { 
   Login, 
   Signup, 
   ChangePassword, 
-  Friend, 
   Home, 
-  Profile, 
   CreateProject, 
   Projects, 
   CreateWorker, 
@@ -33,5 +30,6 @@ export {
   Payback, 
   CreateWork, 
   WorkAttendance,
-  GeneralAccounting
+  GeneralAccounting,
+  WorkerAccounting
 }

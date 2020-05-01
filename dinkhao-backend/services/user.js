@@ -28,7 +28,7 @@ module.exports = (app, db) => {
           user
             .update({
               name: data.name,
-              role: data.role
+              role: 'admin'
             })
             .then(() => {
               console.log('user created in db');

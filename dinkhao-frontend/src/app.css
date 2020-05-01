@@ -26,7 +26,7 @@
   color: #294694;
 }
 
-#lock-icon {
+.lock-icon {
   font-size: 20px;
   margin-left: 15px;
   cursor: pointer;

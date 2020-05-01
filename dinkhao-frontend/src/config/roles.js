@@ -12,17 +12,9 @@ const components = {
     component: 'ChangePassword',
     url: '/changepassword',
   },
-  friend: {
-    component: 'Friend',
-    url: '/friends',
-  },
   home: {
     component: 'Home',
     url: '/',
-  },
-  profile: {
-    component: 'Profile',
-    url: '/my-profile',
   },
   createProject: {
     component: 'CreateProject',
@@ -67,6 +59,10 @@ const components = {
   generalAccounting: {
     component: 'GeneralAccounting',
     url: '/general-accounting'
+  },
+  workerAccounting: {
+    component: 'WorkerAccounting',
+    url: '/worker-accounting'
   }
 };
 
@@ -76,15 +72,13 @@ export default {
     routes: [...Object.values(components)],
     redirect: ['/']
   },
-  user: {
-    routes: [
-      components.changepassword,
-      components.friend,
-      components.home,
-      components.profile
-    ],
-    redirect: ['/']
-  },
+  // user: {
+  //   routes: [
+  //     components.changepassword,
+  //     components.home,
+  //   ],
+  //   redirect: ['/']
+  // },
   guest: {
     routes: [
       components.login,
