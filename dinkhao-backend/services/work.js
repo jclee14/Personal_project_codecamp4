@@ -2,7 +2,7 @@ const passport = require('passport')
 
 module.exports = (app, db) => {
 
-  app.get('/works/:projectId', passport.authenticate('jwt', { session: false }),
+  app.get('/worksbyproject/:projectId', passport.authenticate('jwt', { session: false }),
     function (req, res) {
       db.work.findAll({ where: { projectId: req.params.projectId }})
         .then(result => {

@@ -48,9 +48,19 @@
 
 .worker-profile-avatar {
   object-fit: cover;
-  height: 150px;
+}
+
+.workerList-avatar-size {
+  height: 200px;
   width: auto;
-  max-width: 150px;
+  max-width: 200px;
+}
+
+.attendance-avatar-size {
+  height: auto;
+  width: 100%;
+  max-height: 204px;
+  max-width: 204px;
 }
 
 .timeTag h2 {
@@ -66,4 +76,35 @@
 .brief-worker-info span {
   font-size: 30px;
   font-weight: 600;
+}
+
+.worker-earn-card p, .worker-earn-card h3 , .worker-earn-card {
+  color: #1F346D !important;
+}
+
+.worker-earn-card p {
+  font-size: 1.2em;
+  margin: 0;
+  line-height: 40px;
+}
+
+.card-bio-content {
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+.worker-earn-card h3 {
+  margin: 5px 0;
+}
+
+.blue-bg {
+  background-color: #BFC7DF;
+}
+
+.worker-earn-card .time-topic {
+  padding-left: 10%;
+}
+
+.attendance-edit-input {
+  padding: 4px 5px !important;
 }
