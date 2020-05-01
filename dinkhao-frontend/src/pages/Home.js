@@ -21,25 +21,17 @@ class Home extends React.Component {
         profilePic: this.props.user.profilePic
       }
     })
-    Axios.get('/feed').then((response) => {
-      console.log(response)
-      this.setState({
-        postList: response.data
-      })
-    })
   }
 
   render() {
     return (
-      <Row type="flex" justify="center">
-        <Col md={12} sm={16} xs={24}>
+      <Row type="flex" justify="center" style={{ textAlign: 'center' }}>
+        <Col>
           <Row>
-            <CreatePost avatarSrc={this.state.owner.profilePic} />
+            <h1>DINKHAO GROUP.</h1>
           </Row>
           <Row>
-            <PostList
-              postList={this.state.postList} owner={this.state.owner}
-            />
+            <h1>Worker Wage Calculation System</h1>
           </Row>
         </Col>
       </Row>
