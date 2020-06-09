@@ -122,7 +122,7 @@ class SignupForm extends React.Component {
                   <Col md={8} sm={12} xs={24}>
                     <Form.Item>
                       <Button block type="primary" htmlType="submit" className="login-form-button">
-                        Log in
+                        Submit
                     </Button>
                     </Form.Item>
                   </Col>
