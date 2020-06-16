@@ -16,17 +16,17 @@ module.exports = (app, db) => {
   )
 
   app.get('/worker/:id', passport.authenticate('jwt', { session: false }),
-  function (req, res) {
-    db.worker.findOne({ where: { id: req.params.id }})
-      .then(result => {
-        res.status(200).send(result)
-      })
-      .catch(err => {
-        console.error(err);
-        res.status(400).send({ message: err.message })
-      })
-  }
-)
+    function (req, res) {
+      db.worker.findOne({ where: { id: req.params.id } })
+        .then(result => {
+          res.status(200).send(result)
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(400).send({ message: err.message })
+        })
+    }
+  )
 
   app.post('/create-worker', passport.authenticate('jwt', { session: false }),
     async function (req, res) {
@@ -40,23 +40,29 @@ module.exports = (app, db) => {
         await picture.mv('./upload/' + pictureName)
       }
 
-      try {
-        let result = await db.worker.create({
-          fname: req.body.fname,
-          lname: req.body.lname,
-          wage_rate: req.body.wage_rate,
-          gender: req.body.gender,
-          race: req.body.race,
-          bank_account_id: req.body.bank_account_id,
-          image_url: pictureName === '' ? '' : pictureName,
-          phone: req.body.phone,
-          isEmployed: req.body.isEmployed
-        })
-        res.status(201).send(result)
-      }
-      catch (err) {
-        console.error(err);
-        res.status(400).send({ message: err.message })
+      let targetWorker = await db.worker.findOne({ where: { fname: req.body.fname, lname: req.body.lname } });
+      if (targetWorker) {
+        console.log("This worker is already registered!");
+        res.status(404).send({ message: "This worker is already registered!" })
+      } else {
+        try {
+          let result = await db.worker.create({
+            fname: req.body.fname,
+            lname: req.body.lname,
+            wage_rate: req.body.wage_rate,
+            gender: req.body.gender,
+            race: req.body.race,
+            bank_account_id: req.body.bank_account_id,
+            image_url: pictureName === '' ? '' : pictureName,
+            phone: req.body.phone,
+            isEmployed: req.body.isEmployed
+          })
+          res.status(201).send(result)
+        }
+        catch (err) {
+          console.error(err);
+          res.status(400).send({ message: err.message })
+        }
       }
     }
   )

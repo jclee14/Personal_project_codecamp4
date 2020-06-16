@@ -44,8 +44,19 @@ class CreateProjectForm extends React.Component {
     payloadProject.append('start_date', this.state.projectStartDate);
     payloadProject.append('end_date', this.state.projectEndDate);
 
-    let createProjectResult = await Axios.post('/create-project', payloadProject);
-    console.log(createProjectResult);
+    let createProjectResult;
+
+    try {
+      createProjectResult = await Axios.post('/create-project', payloadProject);
+      console.log(createProjectResult);
+    }
+    catch(err) {
+      console.log(err);
+      this.setState({
+        modelVisible: false
+      });
+      //this.showErrorModal('Error', 'This person was already registered.');
+    }
 
     payloadAdminister.append('projectId', createProjectResult.data.id);
     payloadAdminister.append('userId', this.state.user.id);

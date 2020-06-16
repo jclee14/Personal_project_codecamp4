@@ -4,13 +4,14 @@ import logo from '../../images/dk_logo1.jpg';
 import jwtDecode from 'jwt-decode';
 import { connect } from 'react-redux';
 import Axios from '../../config/api.service';
+import { Link } from 'react-router-dom';
 
 class SignupForm extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (values.password !== values.repassword) {
-        this.error({title: 'Sign-up Incompleted!', content: 'Your password and confirmed password is different.'});
+        this.error({ title: 'Sign-up Incompleted!', content: 'Your password and confirmed password is different.' });
         this.props.form.resetFields('password');
         this.props.form.resetFields('repassword');
       } else if (!err) {
@@ -21,15 +22,22 @@ class SignupForm extends React.Component {
         })
           .then(result => {
             console.log(result);
+            this.showSuccess();
             this.props.history.push('/login')
             window.location.reload(true);
           })
           .catch(err => {
             console.error(err);
-            this.error({title: 'Sign-up Incompleted!', content: 'Your username is unavailable.'});
+            this.error({ title: 'Sign-up Incompleted!', content: 'Your username is unavailable.' });
             this.props.form.resetFields()
           })
       }
+    });
+  }
+
+  showSuccess = () => {
+    Modal.success({
+      content: 'Account has been registered successfully.',
     });
   }
 
@@ -39,7 +47,6 @@ class SignupForm extends React.Component {
       content: message.content
     });
   }
-
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -55,7 +62,7 @@ class SignupForm extends React.Component {
             <Col md={8} sm={12} xs={24} type="flex" justify="center" align="middle">
               <Form onSubmit={this.handleSubmit} className="login-form" style={{ maxWidth: '400px', width: '100%' }}>
                 <Row>
-                  <Form.Item label="Username">
+                  <Form.Item>
                     {getFieldDecorator('username', {
                       rules: [
                         {
@@ -119,13 +126,32 @@ class SignupForm extends React.Component {
                   </Form.Item>
                 </Row>
                 <Row type="flex" justify="center">
-                  <Col md={8} sm={12} xs={24}>
+                  <Col span={12}>
+                    <Form.Item>
+                      <Link to='/login'>
+                        <Button block type="link" >
+                          Back
+                        </Button>
+                      </Link>
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
                     <Form.Item>
                       <Button block type="primary" htmlType="submit" className="login-form-button">
                         Submit
-                    </Button>
+                      </Button>
                     </Form.Item>
                   </Col>
+                  {/*                   <Col md={8} sm={12} xs={24}>
+                    <Form.Item>
+                      <Button block type="primary" htmlType="submit" className="login-form-button">
+                        Submit
+                      </Button>
+                      <Button block type="danger" className="login-form-button">
+                        Back
+                      </Button>
+                    </Form.Item>
+                  </Col> */}
                 </Row>
               </Form>
             </Col>
