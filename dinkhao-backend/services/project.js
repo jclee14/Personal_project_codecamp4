@@ -20,9 +20,10 @@ module.exports = (app, db) => {
 
       let targetProject = await db.project.findOne({ where: { name: req.body.name } });
       if (targetProject) {
-        let message = "This project is already registered!";
+        const topic = "Registration Unsuccessful"
+        const message = "This project's name is already registered!";
         console.log(message);
-        res.status(404).send({ message: message })
+        res.status(404).send({ topic: topic, message: message })
       } else {
         try {
           let result = await db.project.create({
@@ -35,7 +36,9 @@ module.exports = (app, db) => {
         }
         catch (err) {
           console.error(err);
-          res.status(400).send({ message: err.message })
+          const topic = "Error";
+          const message = "Register Unsuccessful";
+          res.status(400).send({ topic: topic, message: message })
         }
       }
     }

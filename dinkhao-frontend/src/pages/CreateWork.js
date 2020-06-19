@@ -3,6 +3,7 @@ import { Row, Col, Form, Input, Button, DatePicker, Modal, Select, Divider, Avat
 import Axios from '../config/api.service'
 import { connect } from 'react-redux'
 import { UserOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { isMoment } from 'moment';
 
 var moment = require('moment');
 moment().format();
@@ -24,6 +25,7 @@ class CreateWorkForm extends React.Component {
       workerList: [],
       workList: [],
       monthList: ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      selectProjectData: [],
       selectProjectId: undefined,
       selectWorkerId: undefined,
       selectWorkerData: [],
@@ -103,18 +105,25 @@ class CreateWorkForm extends React.Component {
 
   handleProjectSelect = async (value) => {
     if (value) {
+      let targetProject = this.state.projectList.filter(project => project.id === value);
       this.setState({
+        selectProjectData: targetProject[0],
         selectProjectId: value,
         selectWorkerId: undefined,
-        selectWorkerData: []
+        selectWorkerData: [],
+        selectDateRange: undefined,
+        selectMonth: undefined,
       },
         () => this.getMember(this.state.selectProjectId)
       );
     } else {
       this.setState({
+        selectProjectData: [],
         selectProjectId: undefined,
         displayMember: [],
-        memberList: []
+        memberList: [],
+        selectDateRange: undefined,
+        selectMonth: undefined,
       })
     }
   }
@@ -147,7 +156,7 @@ class CreateWorkForm extends React.Component {
     let extraD = 0;
     let month;
 
-    if(dateString) {
+    if (dateString) {
       month = dateString.split("-");
     }
 
@@ -169,6 +178,13 @@ class CreateWorkForm extends React.Component {
       extraDate: extraD,
       totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
     });
+  }
+
+  disabledDate = (current) => {
+    // Can not select days before today and today
+    //let targetProject = this.state.projectList.filter(project => project.id === this.state.selectProjectId);
+    let { selectProjectData } = this.state;
+    return current && current < moment(selectProjectData['start_date'], 'YYYY-MM-DD') || current > moment(selectProjectData['end_date'], 'YYYY-MM-DD');
   }
 
   handleWorkerSelect = (value) => {
@@ -378,7 +394,7 @@ class CreateWorkForm extends React.Component {
   }
 
   handleResetCells = () => {
-    this.setState({ 
+    this.setState({
       hrValue: {},
       totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
     });
@@ -415,7 +431,8 @@ class CreateWorkForm extends React.Component {
                 </Select>
 
                 <Select
-                  showSearch
+                  
+                  value={this.state.selectDateRange ? this.state.selectDateRange : undefined}
                   style={{ width: 200, marginRight: '10px' }}
                   placeholder={this.state.selectMonth ? "Select date range" : "Select month first"}
                   optionFilterProp="children"
@@ -426,7 +443,13 @@ class CreateWorkForm extends React.Component {
                   <Option value={'secondHalf'}>16th - 30th/31st</Option>
                 </Select>
 
-                <MonthPicker placeholder="Select month" onChange={this.handleMonthPick} />
+                <MonthPicker
+                  value={this.state.selectMonth ? moment(this.state.selectMonth) : undefined}
+                  placeholder={this.state.selectProjectId ? "Select month" : "Select project first"}
+                  onChange={this.handleMonthPick}
+                  disabledDate={this.disabledDate}
+                  disabled={this.state.selectProjectId ? false : true}
+                />
                 {/* <RangePicker onChange={(value) => this.handleDatePick(value)} /> */}
               </Row>
             </Col>

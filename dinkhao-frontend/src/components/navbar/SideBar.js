@@ -10,7 +10,7 @@ class SideBar extends Component {
   render() {
     return (
       <Sider
-        width={250}
+        width={200}
         style={{
           overflow: 'auto',
           height: '100vh',
@@ -28,7 +28,7 @@ class SideBar extends Component {
             key="sub1"
             title={
               <span>
-                <span>Account</span>
+                <span>บัญชี</span>
               </span>
             }
           >
@@ -74,7 +74,7 @@ class SideBar extends Component {
             key="sub4"
             title={
               <span>
-                <span>Project Sites</span>
+                <span>โปรเจค</span>
               </span>
             }
           >
@@ -82,7 +82,7 @@ class SideBar extends Component {
               <a href="/projects"><span className="nav-text">โปรเจคทั้งหมด</span></a>
             </Menu.Item>
             <Menu.Item key="9">
-              <a href="/createproject"><span className="nav-text">เพิ่่มโปรเจคใหม่</span></a>
+              <a href="/createproject"><span className="nav-text">เพิ่มโปรเจคใหม่</span></a>
             </Menu.Item>
             <Menu.Item key="10">
               <a href="/projectmembers"><span className="nav-text">คนงานประจำโปรเจค</span></a>
@@ -92,7 +92,7 @@ class SideBar extends Component {
             key="sub5"
             title={
               <span>
-                <span>Employees</span>
+                <span>คนงาน</span>
               </span>
             }
           >
@@ -115,7 +115,7 @@ class SideBar extends Component {
             }
           >
             <Menu.Item key="14">
-              <a href="/changepassword"><span className="nav-text">Change Password</span></a>
+              <a href="/changepassword"><span className="nav-text">เปลี่ยนรหัสผ่านใหม่</span></a>
             </Menu.Item>
           </SubMenu>
         </Menu>
