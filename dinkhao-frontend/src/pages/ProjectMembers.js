@@ -197,9 +197,14 @@ class ProjectMembersComp extends React.Component {
         key: 'id',
       },
       {
-        title: 'Name',
+        title: 'First Name',
         dataIndex: 'fname',
         key: 'fname',
+      },
+      {
+        title: 'Last Name',
+        dataIndex: 'lname',
+        key: 'lname',
       },
       {
         title: 'Wage',
