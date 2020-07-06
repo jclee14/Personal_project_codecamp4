@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": null,
+    "password": "162578910",
     "database": "dinkhao-worker-salary-system",
     "host": "127.0.0.1",
     "dialect": "mysql"

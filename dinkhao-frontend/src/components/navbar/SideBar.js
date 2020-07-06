@@ -102,9 +102,9 @@ class SideBar extends Component {
             <Menu.Item key="12">
               <a href="/createworker"><span className="nav-text">เพิ่มคนงานใหม่</span></a>
             </Menu.Item>
-            <Menu.Item key="13">
+            {/* <Menu.Item key="13">
               <a href="/workerjobs"><span className="nav-text">จัดการตำแหน่งงาน</span></a>
-            </Menu.Item>
+            </Menu.Item> */}
           </SubMenu>
           <SubMenu
             key="sub6"
@@ -114,7 +114,7 @@ class SideBar extends Component {
               </span>
             }
           >
-            <Menu.Item key="14">
+            <Menu.Item key="13">
               <a href="/changepassword"><span className="nav-text">เปลี่ยนรหัสผ่านใหม่</span></a>
             </Menu.Item>
           </SubMenu>

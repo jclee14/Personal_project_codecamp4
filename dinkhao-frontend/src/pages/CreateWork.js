@@ -11,7 +11,7 @@ moment().format();
 const { Option } = Select;
 const { confirm } = Modal;
 //const { RangePicker } = DatePicker;
-const { RangePicker, MonthPicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 
 
 class CreateWorkForm extends React.Component {
@@ -225,27 +225,27 @@ class CreateWorkForm extends React.Component {
     const reg = /^-?\d*(\.\d*)?$/;
     let hrValue;
     if ((!isNaN(value) && reg.test(value)) || value === '') {
-      if(name[name.length-1] === '1' && parseFloat(value) <= 8 || value === '') {
+      if((name[name.length-1] === '1' && parseFloat(value) <= 8) || value === '') {
         this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
           () => this.sumHr()
         )
-      } else if(name[name.length-1] === '2' && parseFloat(value) <= 4.5 || value === '') {
+      } else if((name[name.length-1] === '2' && parseFloat(value) <= 4.5) || value === '') {
         this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
           () => this.sumHr()
         )
-      } else if(name[name.length-1] === '3' && parseFloat(value) <= 1 || value === '') {
+      } else if((name[name.length-1] === '3' && parseFloat(value) <= 1) || value === '') {
         this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
           () => this.sumHr()
         )
-      } else if(name[name.length-1] === '4' && parseFloat(value) <= 4.5 || value === '') {
+      } else if((name[name.length-1] === '4' && parseFloat(value) <= 4.5) || value === '') {
         this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
           () => this.sumHr()
         )
-      } else if(name[name.length-1] === '5' && parseFloat(value) <= 1 || value === '') {
+      } else if((name[name.length-1] === '5' && parseFloat(value) <= 1) || value === '') {
         this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
           () => this.sumHr()
         )
-      } else if(name[name.length-1] === '6' && parseFloat(value) <= 5 || value === '') {
+      } else if((name[name.length-1] === '6' && parseFloat(value) <= 5) || value === '') {
         this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
           () => this.sumHr()
         )

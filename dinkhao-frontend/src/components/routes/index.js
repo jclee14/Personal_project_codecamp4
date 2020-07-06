@@ -6,7 +6,7 @@ import CreateProject from '../../pages/CreateProject';
 import Projects from '../../pages/Projects';
 import CreateWorker from '../../pages/CreateWorker';
 import Workers from '../../pages/Workers';
-import WorkerJobs from '../../pages/WorkerJobs';
+// import WorkerJobs from '../../pages/WorkerJobs';
 import ExtraCharges from '../../pages/ExtraCharges';
 import ProjectMembers from '../../pages/ProjectMembers';
 import Payback from '../../pages/Payback';
@@ -24,7 +24,7 @@ export {
   Projects, 
   CreateWorker, 
   Workers, 
-  WorkerJobs, 
+  // WorkerJobs, 
   ExtraCharges, 
   ProjectMembers, 
   Payback, 

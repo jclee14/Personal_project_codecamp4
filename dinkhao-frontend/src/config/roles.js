@@ -36,10 +36,10 @@ const components = {
     component: 'Workers',
     url: '/workers'
   },
-  workerJob: {
-    component: 'WorkerJobs',
-    url: '/workerjobs'
-  },
+  // workerJob: {
+  //   component: 'WorkerJobs',
+  //   url: '/workerjobs'
+  // },
   extraCharge: {
     component: 'ExtraCharges',
     url: '/extracharges'
