@@ -67,7 +67,7 @@ class Login extends React.Component {
                 })(<Input.Password />)}
               </Form.Item>
               <Row>
-                <Col span={12}>
+                {/* <Col span={12}>
                   <Form.Item>
                     <Link to='/signup'>
                       <Button block type="link" >
@@ -75,8 +75,8 @@ class Login extends React.Component {
                       </Button>
                     </Link>
                   </Form.Item>
-                </Col>
-                <Col span={12}>
+                </Col> */}
+                <Col>
                   <Form.Item>
                     <Button block type="primary" htmlType="submit" className="login-form-button">
                       Log in

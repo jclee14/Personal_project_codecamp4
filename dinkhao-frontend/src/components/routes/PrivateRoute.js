@@ -35,7 +35,7 @@ class PrivateRoute extends Component {
             key={route.url}
           />
         )}
-{/*         {this.state.redirectRoutes.map(url =>
+        {/* {this.state.redirectRoutes.map(url =>
           <Redirect to={url} />
         )} */}
         {this.props.role === "guest" ? <Redirect to='/login' /> : null}

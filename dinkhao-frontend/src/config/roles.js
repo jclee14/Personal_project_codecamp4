@@ -72,13 +72,24 @@ export default {
     routes: [...Object.values(components)],
     redirect: ['/']
   },
-  // user: {
-  //   routes: [
-  //     components.changepassword,
-  //     components.home,
-  //   ],
-  //   redirect: ['/']
-  // },
+  user: {
+    routes: [
+      components.changepassword,
+      components.home,
+      components.createProject,
+      components.createWork,
+      components.createWorker,
+      components.extraCharge,
+      components.payback,
+      components.workattendance,
+      components.worker,
+      components.generalAccounting,
+      components.workerAccounting,
+      components.project,
+      components.projectMember
+    ],
+    redirect: ['/']
+  },
   guest: {
     routes: [
       components.login,

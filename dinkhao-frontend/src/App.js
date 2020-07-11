@@ -16,7 +16,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <Layout style={{ minHeight: '100vh' }}>
-          {role === 'guest' ? null : <SideBar />}
+          {role === 'guest' ? null : <SideBar role={role} />}
           <Layout className="site-layout" style={{ marginLeft: role === 'guest' ? 0 : 200 }}>
             {
               role === 'guest' ?

@@ -1,10 +1,12 @@
 import React from 'react';
-import { Row, Form, Icon, Input, Col, Button, Modal } from 'antd';
+import { Row, Form, Icon, Input, Col, Button, Modal, Select } from 'antd';
 import logo from '../../images/dk_logo1.jpg';
 import jwtDecode from 'jwt-decode';
 import { connect } from 'react-redux';
 import Axios from '../../config/api.service';
 import { Link } from 'react-router-dom';
+
+const { Option } = Select;
 
 class SignupForm extends React.Component {
   handleSubmit = (e) => {
@@ -18,13 +20,15 @@ class SignupForm extends React.Component {
         Axios.post('/registerUser', {
           username: values.username,
           password: values.password,
-          name: values.name
+          name: values.name,
+          role: values.role
         })
           .then(result => {
             console.log(result);
             this.showSuccess();
-            this.props.history.push('/login')
-            window.location.reload(true);
+            this.props.form.resetFields();
+            // this.props.history.push('/login')
+            // window.location.reload(true);
           })
           .catch(err => {
             console.error(err);
@@ -53,11 +57,11 @@ class SignupForm extends React.Component {
     return (
       <Row type="flex" style={{ marginTop: '5vh' }} align="middle">
         <Col span={24} >
-          <Row type="flex" justify="center" align="middle">
+          {/* <Row type="flex" justify="center" align="middle">
             <Col md={8} sm={12} xs={24} type="flex" justify="center" align="middle">
               <img src={logo} alt="Logo Fakebook" style={{ height: '100%', maxHeight: '300px' }}></img>
             </Col>
-          </Row>
+          </Row> */}
           <Row type="flex" justify="center" align="middle" style={{ marginTop: '40px' }}>
             <Col md={8} sm={12} xs={24} type="flex" justify="center" align="middle">
               <Form onSubmit={this.handleSubmit} className="login-form" style={{ maxWidth: '400px', width: '100%' }}>
@@ -124,9 +128,29 @@ class SignupForm extends React.Component {
                       />
                     )}
                   </Form.Item>
+                  <Form.Item>
+                    {getFieldDecorator('role', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please select user role!'
+                        }
+                      ],
+                      
+                    })(
+                      <Select
+                        prefix={<Icon type="solution" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        placeholder="Account Role"
+                        // onChange={onRoleChange}
+                      >
+                        <Option value="admin">Admin</Option>
+                        <Option value="user">User</Option>
+                      </Select>
+                    )}
+                  </Form.Item>
                 </Row>
                 <Row type="flex" justify="center">
-                  <Col span={12}>
+                  {/* <Col span={12}>
                     <Form.Item>
                       <Link to='/login'>
                         <Button block type="link" >
@@ -134,7 +158,7 @@ class SignupForm extends React.Component {
                         </Button>
                       </Link>
                     </Form.Item>
-                  </Col>
+                  </Col> */}
                   <Col span={12}>
                     <Form.Item>
                       <Button block type="primary" htmlType="submit" className="login-form-button">

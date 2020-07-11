@@ -114,7 +114,10 @@ class SideBar extends Component {
               </span>
             }
           >
-            <Menu.Item key="13">
+            <Menu.Item key="13" style={ this.props.role === 'admin' ? null : { display: 'none'}}>
+              <a href="/signup"><span className="nav-text">เพิ่มผู้ดูแลใหม่</span></a>
+            </Menu.Item>
+            <Menu.Item key="14">
               <a href="/changepassword"><span className="nav-text">เปลี่ยนรหัสผ่านใหม่</span></a>
             </Menu.Item>
           </SubMenu>
