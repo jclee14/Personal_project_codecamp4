@@ -62,7 +62,10 @@ class SignupForm extends React.Component {
               <img src={logo} alt="Logo Fakebook" style={{ height: '100%', maxHeight: '300px' }}></img>
             </Col>
           </Row> */}
-          <Row type="flex" justify="center" align="middle" style={{ marginTop: '40px' }}>
+          <Row type="flex" justify="center" align="middle">
+            <h1 className="page-header">เพิ่มผู้ดูแลใหม่</h1>
+          </Row>
+          <Row type="flex" justify="center" align="middle" style={{ marginTop: '10px' }}>
             <Col md={8} sm={12} xs={24} type="flex" justify="center" align="middle">
               <Form onSubmit={this.handleSubmit} className="login-form" style={{ maxWidth: '400px', width: '100%' }}>
                 <Row>
@@ -181,7 +184,7 @@ class SignupForm extends React.Component {
             </Col>
           </Row>
         </Col>
-      </Row >
+      </Row>
     )
   }
 }

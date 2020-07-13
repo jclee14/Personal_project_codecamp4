@@ -70,7 +70,7 @@ export default {
   //role name as a key.
   admin: {
     routes: [...Object.values(components)],
-    redirect: ['/']
+    redirect: '/'
   },
   user: {
     routes: [
@@ -88,13 +88,13 @@ export default {
       components.project,
       components.projectMember
     ],
-    redirect: ['/']
+    redirect: '/'
   },
   guest: {
     routes: [
       components.login,
       components.signup,
     ],
-    redirect: ['/login']
+    redirect: '/login'
   }
 }
