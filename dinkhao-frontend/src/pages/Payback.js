@@ -340,7 +340,7 @@ class CreatePaybackForm extends React.Component {
     return (
       <>
         <Collapse defaultActiveKey={['1']}>
-          <Panel header="Create new record" key="1">
+          <Panel header="เพิ่มข้อมูลรายการหักคนงาน" key="1">
             <Form
               {...layout}
               name="extraCharge-create-form"

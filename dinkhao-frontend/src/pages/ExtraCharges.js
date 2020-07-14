@@ -179,7 +179,7 @@ class ExtraChargesComp extends React.Component {
       <Row>
         <Col>
           <Row style={{ margin: "0 5%" }}>
-            <h1 className="page-header">Extra Charge Database</h1>
+            <h1 className="page-header">จัดการรายการหัก</h1>
             {/* <Search
               placeholder="Search name here"
               onChange={this.handleSearch}
@@ -196,12 +196,12 @@ class ExtraChargesComp extends React.Component {
                 {getFieldDecorator('newTask', {
                   onChange: this.handleChange
                 })(
-                  <Input placeholder="Add new task here" />
+                  <Input placeholder="ระบุรายการใหม่" />
                 )}
               </Form.Item>
               <Form.Item>
                 <Button onClick={this.formValidation}>
-                  Add
+                  เพิ่ม
                 </Button>
               </Form.Item>
             </Form>

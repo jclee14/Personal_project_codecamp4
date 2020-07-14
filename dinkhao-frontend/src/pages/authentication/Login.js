@@ -43,7 +43,7 @@ class Login extends React.Component {
 
     return (
       <div>
-        <Row type="flex" justify="center" align="middle" style={{ marginTop: '10vh', height: '100%' }}>
+        <Row type="flex" justify="center" align="middle" style={{ marginTop: '30vh', height: '100%' }}>
             <img src={logo} alt="Dinkhao Logo" style={{ width: '100%', paddingLeft: '24px', paddingRight: '24px', maxWidth: '300px' }}></img>
             <Form onSubmit={this.handleSubmit} className="login-form" style={{ maxWidth: '400px', width: '100%' }}>
               <Form.Item label="Username">
@@ -67,7 +67,7 @@ class Login extends React.Component {
                 })(<Input.Password />)}
               </Form.Item>
               <Row>
-                <Col span={12}>
+                {/* <Col span={12}>
                   <Form.Item>
                     <Link to='/signup'>
                       <Button block type="link" >
@@ -75,8 +75,8 @@ class Login extends React.Component {
                       </Button>
                     </Link>
                   </Form.Item>
-                </Col>
-                <Col span={12}>
+                </Col> */}
+                <Col>
                   <Form.Item>
                     <Button block type="primary" htmlType="submit" className="login-form-button">
                       Log in

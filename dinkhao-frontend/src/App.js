@@ -16,11 +16,16 @@ class App extends React.Component {
     return (
       <div className="App">
         <Layout style={{ minHeight: '100vh' }}>
-          <SideBar />
-          <Layout className="site-layout" style={{ marginLeft: 250 }}>
-            <Header className="site-layout-background" style={{ padding: 0 }} >
-                <NavBar />
-            </Header>
+          {role === 'guest' ? null : <SideBar role={role} />}
+          <Layout className="site-layout" style={{ marginLeft: role === 'guest' ? 0 : 200 }}>
+            {
+              role === 'guest' ?
+              null :
+              <Header className="site-layout-background" style={{ padding: 0 }} >
+                  <NavBar />
+              </Header>
+              
+            }
             <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
               <Switch>
                 <PrivateRoute role={role} />

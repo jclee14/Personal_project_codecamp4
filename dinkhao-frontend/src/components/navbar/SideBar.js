@@ -10,7 +10,7 @@ class SideBar extends Component {
   render() {
     return (
       <Sider
-        width={250}
+        width={200}
         style={{
           overflow: 'auto',
           height: '100vh',
@@ -28,7 +28,7 @@ class SideBar extends Component {
             key="sub1"
             title={
               <span>
-                <span>Account</span>
+                <span>บัญชี</span>
               </span>
             }
           >
@@ -74,7 +74,7 @@ class SideBar extends Component {
             key="sub4"
             title={
               <span>
-                <span>Project Sites</span>
+                <span>โปรเจค</span>
               </span>
             }
           >
@@ -82,7 +82,7 @@ class SideBar extends Component {
               <a href="/projects"><span className="nav-text">โปรเจคทั้งหมด</span></a>
             </Menu.Item>
             <Menu.Item key="9">
-              <a href="/createproject"><span className="nav-text">เพิ่่มโปรเจคใหม่</span></a>
+              <a href="/createproject"><span className="nav-text">เพิ่มโปรเจคใหม่</span></a>
             </Menu.Item>
             <Menu.Item key="10">
               <a href="/projectmembers"><span className="nav-text">คนงานประจำโปรเจค</span></a>
@@ -92,7 +92,7 @@ class SideBar extends Component {
             key="sub5"
             title={
               <span>
-                <span>Employees</span>
+                <span>คนงาน</span>
               </span>
             }
           >
@@ -102,9 +102,9 @@ class SideBar extends Component {
             <Menu.Item key="12">
               <a href="/createworker"><span className="nav-text">เพิ่มคนงานใหม่</span></a>
             </Menu.Item>
-            <Menu.Item key="13">
+            {/* <Menu.Item key="13">
               <a href="/workerjobs"><span className="nav-text">จัดการตำแหน่งงาน</span></a>
-            </Menu.Item>
+            </Menu.Item> */}
           </SubMenu>
           <SubMenu
             key="sub6"
@@ -114,8 +114,11 @@ class SideBar extends Component {
               </span>
             }
           >
+            <Menu.Item key="13" style={ this.props.role === 'admin' ? null : { display: 'none'}}>
+              <a href="/signup"><span className="nav-text">เพิ่มผู้ดูแลใหม่</span></a>
+            </Menu.Item>
             <Menu.Item key="14">
-              <a href="/changepassword"><span className="nav-text">Change Password</span></a>
+              <a href="/changepassword"><span className="nav-text">เปลี่ยนรหัสผ่านใหม่</span></a>
             </Menu.Item>
           </SubMenu>
         </Menu>

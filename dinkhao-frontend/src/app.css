@@ -97,6 +97,18 @@
   font-size: 1.5em;
 }
 
+.timeTag-name {
+  padding-left: 10%;
+}
+
+.timeTag-focus-bg {
+  background-color: #BFC7DF !important;
+}
+
+.timeTag-highlight-bg {
+  background-color: #e6faff;
+}
+
 .brief-worker-info {
   font-size: 20px;
   color: #1F346D;

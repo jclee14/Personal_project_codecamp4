@@ -44,11 +44,11 @@ class CreateWorkerForm extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  handleSelect = (e) => {
+  handleSelectEmployed = (e) => {
     this.setState({ isEmployed: e });
   }
 
-  handleCreateProject = async () => {
+  handleCreateWorker = async () => {
     let payload = new FormData();
 
     payload.append('fname', this.state.fname);
@@ -61,29 +61,25 @@ class CreateWorkerForm extends React.Component {
     payload.append('isEmployed', this.state.isEmployed);
     payload.append('photoPost', this.state.fileList[0])
 
-    let result = await Axios.post('/create-worker', payload);
-    console.log(result);
-
-    this.setState({
-      fname: '',
-      lname: '',
-      wage_rate: '',
-      gender: '',
-      race: '',
-      bank_account_id: '',
-      phone: '',
-      isEmployed: 1,
-      fileList: [],
-      modelVisible: false
-    });
-
-    this.props.form.resetFields();
+    try {
+      let result = await Axios.post('/create-worker', payload);
+      console.log(result);
+      this.showSuccess();
+      this.formReset();
+    }
+    catch (err) {
+      console.log(err.message);
+      this.setState({
+        modelVisible: false
+      });
+      this.showErrorModal('Error', 'This person was already registered.');
+    }
   }
 
-  showErrorModal() {
+  showErrorModal(title, message) {
     Modal.error({
-      title: 'Form Incompleted',
-      content: 'Please fill at least \'First Name\' and \'Wage Rage\' fields!',
+      title: title,
+      content: message,
     });
   }
 
@@ -93,6 +89,12 @@ class CreateWorkerForm extends React.Component {
     });
   };
 
+  showSuccess = () => {
+    Modal.success({
+      content: 'Worker has been registered successfully.',
+    });
+  }
+
   handleCancel = () => {
     this.setState({
       modelVisible: false,
@@ -100,11 +102,28 @@ class CreateWorkerForm extends React.Component {
   };
 
   formValidation = () => {
-    if (!this.state.fname || !this.state.wage_rate || !this.state.isEmployed) {
-      this.showErrorModal();
+    if (!this.state.fname || !this.state.wage_rate || !this.state.gender) {
+      this.showErrorModal('Form Incompleted', 'Please fill at least \'First Name\', \'Wage Rage\' and \'Gender\' fields!');
     } else {
       this.showConfirm();
     }
+  }
+
+  formReset = () => {
+    this.setState({
+      fname: '',
+      lname: '',
+      wage_rate: '',
+      gender: '',
+      race: '',
+      bank_account_id: '',
+      phone: '',
+      isEmployed: '1',
+      fileList: [],
+      modelVisible: false
+    });
+
+    this.props.form.resetFields();
   }
 
   render() {
@@ -174,6 +193,7 @@ class CreateWorkerForm extends React.Component {
 
               <Form.Item label="Gender">
                 {getFieldDecorator('gender', {
+                  rules: [{ required: true, message: 'Please select worker\'s gender' }],
                   onChange: this.handleRadio
                 })(
                   <Radio.Group name='gender'>
@@ -222,7 +242,7 @@ class CreateWorkerForm extends React.Component {
 
               <Form.Item label="Work Status">
                 {getFieldDecorator('isEmployed', {
-                  onChange: this.handleSelect,
+                  onChange: this.handleSelectEmployed,
                   initialValue: '1'
                 })(
                   <Select style={{ width: 120 }}>
@@ -233,8 +253,11 @@ class CreateWorkerForm extends React.Component {
               </Form.Item>
 
               <Form.Item {...tailLayout}>
-                <Button onClick={this.formValidation}>
+                <Button type="primary" onClick={this.formValidation} style={{ width: '200px', marginRight: '20px' }}>
                   Submit
+                </Button>
+                <Button type="danger" onClick={this.formReset} >
+                  Reset
                 </Button>
               </Form.Item>
 
@@ -243,7 +266,7 @@ class CreateWorkerForm extends React.Component {
             <Modal
               title="Create Worker Confirmation"
               visible={this.state.modelVisible}
-              onOk={this.handleCreateProject}
+              onOk={this.handleCreateWorker}
               onCancel={this.handleCancel}
             >
               <p>First Name:{'\u00A0'} <span className="project-confirm-data">{this.state.fname}</span></p>
@@ -264,7 +287,7 @@ class CreateWorkerForm extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-          user: state.user
+    user: state.user
   }
 }
 

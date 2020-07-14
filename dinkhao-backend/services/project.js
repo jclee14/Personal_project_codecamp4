@@ -4,7 +4,7 @@ module.exports = (app, db) => {
 
   app.get('/projects', passport.authenticate('jwt', { session: false }),
     function (req, res) {
-      db.project.findAll({ include: [{model : db.worker}] })
+      db.project.findAll({ include: [{ model: db.worker }] })
         .then(result => {
           res.status(200).send(result)
         })
@@ -16,20 +16,31 @@ module.exports = (app, db) => {
   )
 
   app.post('/create-project', passport.authenticate('jwt', { session: false }),
-    function (req, res) {
-      db.project.create({
-        name: req.body.name,
-        location: req.body.location,
-        start_date: req.body.start_date,
-        end_date: req.body.end_date
-      })
-        .then((result) => {
-          res.status(201).send(result)
-        })
-        .catch((err) => {
+    async function (req, res) {
+
+      let targetProject = await db.project.findOne({ where: { name: req.body.name } });
+      if (targetProject) {
+        const topic = "Registration Unsuccessful"
+        const message = "This project's name is already registered!";
+        console.log(message);
+        res.status(404).send({ topic: topic, message: message })
+      } else {
+        try {
+          let result = await db.project.create({
+            name: req.body.name,
+            location: req.body.location,
+            start_date: req.body.start_date,
+            end_date: req.body.end_date
+          });
+          res.status(201).send(result);
+        }
+        catch (err) {
           console.error(err);
-          res.status(400).send({ message: err.message })
-        })
+          const topic = "Error";
+          const message = "Register Unsuccessful";
+          res.status(400).send({ topic: topic, message: message })
+        }
+      }
     }
   )
 

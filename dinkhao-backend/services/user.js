@@ -16,7 +16,7 @@ module.exports = (app, db) => {
         const data = {
           username: user.username,
           name: req.body.name,
-          role: 'user'
+          role: req.body.role
         };
         console.log(data);
         db.user.findOne({
@@ -28,7 +28,7 @@ module.exports = (app, db) => {
           user
             .update({
               name: data.name,
-              role: 'admin'
+              role: data.role
             })
             .then(() => {
               console.log('user created in db');

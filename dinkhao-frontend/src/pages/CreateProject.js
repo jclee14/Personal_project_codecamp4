@@ -37,37 +37,56 @@ class CreateProjectForm extends React.Component {
 
   handleCreateProject = async () => {
     let payloadProject = new FormData();
-    let payloadAdminister = new FormData();
 
     payloadProject.append('name', this.state.projectName);
     payloadProject.append('location', this.state.projectLocation);
     payloadProject.append('start_date', this.state.projectStartDate);
     payloadProject.append('end_date', this.state.projectEndDate);
 
-    let createProjectResult = await Axios.post('/create-project', payloadProject);
-    console.log(createProjectResult);
+    try {
+      let createProjectResult = await Axios.post('/create-project', payloadProject);
+      console.log(createProjectResult);
+      await this.handleCreateAdmistrater(createProjectResult);
+      this.showSuccess();
+      this.formReset();
+    }
+    catch (err) {
+      console.log(err.response);
+      this.setState({
+        modelVisible: false
+      });
+      this.showErrorModal(err.response.data.topic, err.response.data.message);
+    }
+  }
 
+  handleCreateAdmistrater = async (createProjectResult) => {
+    let payloadAdminister = new FormData();
     payloadAdminister.append('projectId', createProjectResult.data.id);
     payloadAdminister.append('userId', this.state.user.id);
 
-    let createAdministerResult = await Axios.post('/create-administer', payloadAdminister);
-    console.log(createAdministerResult);
-
-    this.setState({
-      projectName: '',
-      projectLocation: '',
-      projectStartDate: undefined,
-      projectEndDate: undefined,
-      modelVisible: false,
-    });
-
-    this.props.form.resetFields();
+    try {
+      let createAdministerResult = await Axios.post('/create-administer', payloadAdminister);
+      console.log(createAdministerResult);
+    }
+    catch (err) {
+      console.log(err.response);
+      this.setState({
+        modelVisible: false
+      });
+      this.showErrorModal(err.response.data.topic, err.response.data.message);
+    }
   }
 
-  showErrorModal() {
+  showSuccess = () => {
+    Modal.success({
+      content: 'Project has been registered successfully.',
+    });
+  }
+
+  showErrorModal(title = "Error", message) {
     Modal.error({
-      title: 'Form Incompleted',
-      content: 'Please fill every form field!',
+      title: title,
+      content: message,
     });
   }
 
@@ -85,10 +104,22 @@ class CreateProjectForm extends React.Component {
 
   formValidation = () => {
     if (!this.state.projectName || !this.state.projectLocation || !this.state.projectStartDate || !this.state.projectEndDate) {
-      this.showErrorModal();
+      this.showErrorModal('Form Incompleted', 'Please fill every form field!');
     } else {
       this.showConfirm();
     }
+  }
+
+  formReset = () => {
+    this.setState({
+      projectName: '',
+      projectLocation: '',
+      projectStartDate: undefined,
+      projectEndDate: undefined,
+      modelVisible: false,
+    });
+
+    this.props.form.resetFields();
   }
 
   render() {
@@ -139,9 +170,12 @@ class CreateProjectForm extends React.Component {
               </Form.Item>
 
               <Form.Item {...tailLayout}>
-                <Button onClick={this.formValidation}>
+                <Button type="primary" onClick={this.formValidation} style={{ width: '200px', marginRight: '20px' }}>
                   Submit
-          </Button>
+                </Button>
+                <Button type="danger" onClick={this.formReset} >
+                  Reset
+                </Button>
               </Form.Item>
             </Form>
 

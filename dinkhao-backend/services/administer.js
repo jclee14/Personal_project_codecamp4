@@ -19,7 +19,7 @@ module.exports = (app, db) => {
     async function (req, res) {
       let targetAdminister = await db.administer.findOne({ where: { projectId: req.body.projectId, userId: req.body.userId } });
       if (targetAdminister) {
-        res.status(404).send({ message: "The record is already recorded!" })
+        res.status(404).send({ title: "Error", message: "The record is already recorded!" })
       } else {
         try {
           let result = await db.administer.create({
@@ -30,7 +30,7 @@ module.exports = (app, db) => {
         }
         catch (err) {
           console.error(err);
-          res.status(400).send({ message: err.message })
+          res.status(400).send({ title: "Error", message: err.message })
         }
       }
     }

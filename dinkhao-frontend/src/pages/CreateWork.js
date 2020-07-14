@@ -3,6 +3,7 @@ import { Row, Col, Form, Input, Button, DatePicker, Modal, Select, Divider, Avat
 import Axios from '../config/api.service'
 import { connect } from 'react-redux'
 import { UserOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { isMoment } from 'moment';
 
 var moment = require('moment');
 moment().format();
@@ -10,7 +11,7 @@ moment().format();
 const { Option } = Select;
 const { confirm } = Modal;
 //const { RangePicker } = DatePicker;
-const { RangePicker, MonthPicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 
 
 class CreateWorkForm extends React.Component {
@@ -24,6 +25,7 @@ class CreateWorkForm extends React.Component {
       workerList: [],
       workList: [],
       monthList: ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      selectProjectData: [],
       selectProjectId: undefined,
       selectWorkerId: undefined,
       selectWorkerData: [],
@@ -31,6 +33,10 @@ class CreateWorkForm extends React.Component {
       selectMonth: undefined,
       extraDate: '',
       hrValue: {},
+      rowFocus: '',
+      rowHighlight: '',
+      colFocus: '',
+      rowHighlight: '',
       totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
     }
   }
@@ -103,18 +109,29 @@ class CreateWorkForm extends React.Component {
 
   handleProjectSelect = async (value) => {
     if (value) {
+      let targetProject = this.state.projectList.filter(project => project.id === value);
       this.setState({
+        selectProjectData: targetProject[0],
         selectProjectId: value,
         selectWorkerId: undefined,
-        selectWorkerData: []
+        selectWorkerData: [],
+        selectDateRange: undefined,
+        selectMonth: undefined,
       },
         () => this.getMember(this.state.selectProjectId)
       );
     } else {
       this.setState({
+        selectProjectData: [],
         selectProjectId: undefined,
         displayMember: [],
-        memberList: []
+        memberList: [],
+        selectDateRange: undefined,
+        selectMonth: undefined,
+        rowFocus: '',
+        rowHighlight: '',
+        colFocus: '',
+        rowHighlight: ''
       })
     }
   }
@@ -147,7 +164,7 @@ class CreateWorkForm extends React.Component {
     let extraD = 0;
     let month;
 
-    if(dateString) {
+    if (dateString) {
       month = dateString.split("-");
     }
 
@@ -169,6 +186,13 @@ class CreateWorkForm extends React.Component {
       extraDate: extraD,
       totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
     });
+  }
+
+  disabledDate = (current) => {
+    // Can not select days before today and today
+    //let targetProject = this.state.projectList.filter(project => project.id === this.state.selectProjectId);
+    let { selectProjectData } = this.state;
+    return current && current < moment(selectProjectData['start_date'], 'YYYY-MM-DD') || current > moment(selectProjectData['end_date'], 'YYYY-MM-DD');
   }
 
   handleWorkerSelect = (value) => {
@@ -199,10 +223,36 @@ class CreateWorkForm extends React.Component {
   handleHrInput = (e) => {
     const { value, name } = e.target;
     const reg = /^-?\d*(\.\d*)?$/;
-    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-      this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
-        () => this.sumHr()
-      )
+    let hrValue;
+    if ((!isNaN(value) && reg.test(value)) || value === '') {
+      if((name[name.length-1] === '1' && parseFloat(value) <= 8) || value === '') {
+        this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
+          () => this.sumHr()
+        )
+      } else if((name[name.length-1] === '2' && parseFloat(value) <= 4.5) || value === '') {
+        this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
+          () => this.sumHr()
+        )
+      } else if((name[name.length-1] === '3' && parseFloat(value) <= 1) || value === '') {
+        this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
+          () => this.sumHr()
+        )
+      } else if((name[name.length-1] === '4' && parseFloat(value) <= 4.5) || value === '') {
+        this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
+          () => this.sumHr()
+        )
+      } else if((name[name.length-1] === '5' && parseFloat(value) <= 1) || value === '') {
+        this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
+          () => this.sumHr()
+        )
+      } else if((name[name.length-1] === '6' && parseFloat(value) <= 5) || value === '') {
+        this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
+          () => this.sumHr()
+        )
+      }
+      // this.setState({ hrValue: { ...this.state.hrValue, [name]: value } },
+      //   () => this.sumHr()
+      // )
     }
   };
 
@@ -244,17 +294,18 @@ class CreateWorkForm extends React.Component {
     let result = [];
     let resultChild = [];
     let day = [];
-    let { extraDate } = this.state;
+    let { extraDate, rowFocus, rowHighlight, colFocus, colHighlight } = this.state;
     let startD;
 
     this.state.selectDateRange ? this.state.selectDateRange === 'firstHalf' ? startD = 0 : startD = 15 : startD = 0;
 
     for (let d = startD; d < startD + 15 + extraDate; d++) {
-      day.push(<Col span={1}><Row type="flex" justify="center"><h3>{d + 1}</h3></Row></Col>)
+      let colP = d + 1;
+      day.push(<Col span={1}><Row type="flex" justify="center" className={` ${colHighlight === colP.toString() ? 'timeTag-highlight-bg' : null} ${colFocus === colP.toString() ? 'timeTag-focus-bg' : null} `}><h3>{d + 1}</h3></Row></Col>)
     }
 
     upperR.push(
-      <Row type="flex" gutter={16}>
+      <Row type="flex" gutter={16} style={{ marginBottom: '5px' }}>
         <Col span={5}>
           <Row type="flex" justify="end">
             <h3>Date</h3>
@@ -268,19 +319,19 @@ class CreateWorkForm extends React.Component {
 
     topic.push(
       <Col span={5} className="timeTag">
-        <Row style={{ backgroundColor: '#BFC7DF', paddingLeft: '10%' }}><h2>ก่อน 7.30 น.</h2></Row>
-        <Row style={{ paddingLeft: '10%' }}><h2>7.30 - 12.00 น.</h2></Row>
-        <Row style={{ backgroundColor: '#BFC7DF', paddingLeft: '10%' }}><h2>ผ่าเที่ยง</h2></Row>
-        <Row style={{ paddingLeft: '10%' }}><h2>13.00 - 17.30 น.</h2></Row>
-        <Row style={{ backgroundColor: '#BFC7DF', paddingLeft: '10%' }}><h2>ผ่าเย็น</h2></Row>
-        <Row style={{ paddingLeft: '10%' }}><h2>18.30 - 23.30 น.</h2></Row>
+        <Row className={` ${rowFocus === '1' ? 'timeTag-focus-bg timeTag-name' : 'timeTag-name'} ${rowHighlight === '1' ? 'timeTag-highlight-bg' : null} `}><h2>ก่อน 7.30 น.</h2></Row>
+        <Row className={` ${rowFocus === '2' ? 'timeTag-focus-bg timeTag-name' : 'timeTag-name'} ${rowHighlight === '2' ? 'timeTag-highlight-bg' : null} `}><h2>7.30 - 12.00 น.</h2></Row>
+        <Row className={` ${rowFocus === '3' ? 'timeTag-focus-bg timeTag-name' : 'timeTag-name'} ${rowHighlight === '3' ? 'timeTag-highlight-bg' : null} `}><h2>ผ่าเที่ยง</h2></Row>
+        <Row className={` ${rowFocus === '4' ? 'timeTag-focus-bg timeTag-name' : 'timeTag-name'} ${rowHighlight === '4' ? 'timeTag-highlight-bg' : null} `}><h2>13.00 - 17.30 น.</h2></Row>
+        <Row className={` ${rowFocus === '5' ? 'timeTag-focus-bg timeTag-name' : 'timeTag-name'} ${rowHighlight === '5' ? 'timeTag-highlight-bg' : null} `}><h2>ผ่าเย็น</h2></Row>
+        <Row className={` ${rowFocus === '6' ? 'timeTag-focus-bg timeTag-name' : 'timeTag-name'} ${rowHighlight === '6' ? 'timeTag-highlight-bg' : null} `}><h2>18.30 - 23.30 น.</h2></Row>
       </Col>
     )
 
     for (let c = startD; c < startD + 15 + extraDate; c++) {
       let children = [];
       for (let i = 0; i < 6; i++) {
-        children.push(<Row><Input name={`${c + 1}${i + 1}`} onChange={this.handleHrInput} value={this.state.hrValue[`${c + 1}${i + 1}`]} className="attendance-edit-input" /></Row>)
+        children.push(<Row><Input name={`${c + 1}${i + 1}`} onChange={this.handleHrInput} onFocus={this.handleFocusBG} onBlur={this.handleBlurBG} onPointerOver={this.handleHighlightBG} onPointerLeave={this.handleHighlightBGOff} value={this.state.hrValue[`${c + 1}${i + 1}`]} className="attendance-edit-input" /></Row>)
       }
       cell.push(<Col span={1}>{children}</Col>)
     }
@@ -296,6 +347,26 @@ class CreateWorkForm extends React.Component {
 
     return totalForm;
 
+  }
+
+  handleHighlightBG = (e) => {
+    const { name } = e.target;
+    let colPosition = name.slice(0, name.length-1);
+    this.setState({ rowHighlight: name[name.length-1], colHighlight: colPosition });
+  }
+  
+  handleHighlightBGOff = () => {
+    this.setState({ rowHighlight: '', colHighlight: '' });
+  }
+
+  handleFocusBG = (e) => {
+    const { name } = e.target;
+    let colPosition = name.slice(0, name.length-1);
+    this.setState({ rowFocus: name[name.length-1], colFocus: colPosition });
+  }
+
+  handleBlurBG = (e) => {
+    this.setState({ rowFocus: '', colFocus: '' });
   }
 
   handleValidation = () => {
@@ -378,7 +449,7 @@ class CreateWorkForm extends React.Component {
   }
 
   handleResetCells = () => {
-    this.setState({ 
+    this.setState({
       hrValue: {},
       totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
     });
@@ -415,7 +486,8 @@ class CreateWorkForm extends React.Component {
                 </Select>
 
                 <Select
-                  showSearch
+                  
+                  value={this.state.selectDateRange ? this.state.selectDateRange : undefined}
                   style={{ width: 200, marginRight: '10px' }}
                   placeholder={this.state.selectMonth ? "Select date range" : "Select month first"}
                   optionFilterProp="children"
@@ -426,7 +498,13 @@ class CreateWorkForm extends React.Component {
                   <Option value={'secondHalf'}>16th - 30th/31st</Option>
                 </Select>
 
-                <MonthPicker placeholder="Select month" onChange={this.handleMonthPick} />
+                <MonthPicker
+                  value={this.state.selectMonth ? moment(this.state.selectMonth) : undefined}
+                  placeholder={this.state.selectProjectId ? "Select month" : "Select project first"}
+                  onChange={this.handleMonthPick}
+                  disabledDate={this.disabledDate}
+                  disabled={this.state.selectProjectId ? false : true}
+                />
                 {/* <RangePicker onChange={(value) => this.handleDatePick(value)} /> */}
               </Row>
             </Col>

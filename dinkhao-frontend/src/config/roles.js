@@ -36,10 +36,10 @@ const components = {
     component: 'Workers',
     url: '/workers'
   },
-  workerJob: {
-    component: 'WorkerJobs',
-    url: '/workerjobs'
-  },
+  // workerJob: {
+  //   component: 'WorkerJobs',
+  //   url: '/workerjobs'
+  // },
   extraCharge: {
     component: 'ExtraCharges',
     url: '/extracharges'
@@ -70,20 +70,31 @@ export default {
   //role name as a key.
   admin: {
     routes: [...Object.values(components)],
-    redirect: ['/']
+    redirect: '/'
   },
-  // user: {
-  //   routes: [
-  //     components.changepassword,
-  //     components.home,
-  //   ],
-  //   redirect: ['/']
-  // },
+  user: {
+    routes: [
+      components.changepassword,
+      components.home,
+      components.createProject,
+      components.createWork,
+      components.createWorker,
+      components.extraCharge,
+      components.payback,
+      components.workattendance,
+      components.worker,
+      components.generalAccounting,
+      components.workerAccounting,
+      components.project,
+      components.projectMember
+    ],
+    redirect: '/'
+  },
   guest: {
     routes: [
       components.login,
       components.signup,
     ],
-    redirect: ['/login']
+    redirect: '/login'
   }
 }
