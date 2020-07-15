@@ -22,27 +22,27 @@ class ChangePasswordForm extends React.Component {
     })
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
+    this.props.form.validateFieldsAndScroll(async (err, values) => {
       if (values.newPassword !== values.repassword) {
         this.error({ title: 'Password Changing Incompleted!', content: 'Your new password and confirmed password is different.' });
         this.props.form.resetFields();
       } else if (!err) {
-        Axios.put('/change-password', {
-          oldPassword: values.oldPassword,
-          newPassword: values.newPassword
-        })
-          .then(result => {
-            this.props.logout()
-            this.props.history.push('/login')
-            window.location.reload(true);
-          })
-          .catch(err => {
-            console.error(err);
-            this.error({ title: 'Password Changing Incompleted!', content: 'Your old password is incorrect.' })
-            this.props.form.resetFields()
-          })
+        try {
+          let result = await Axios.put('/change-password', {
+            oldPassword: values.oldPassword,
+            newPassword: values.newPassword
+          });
+          console.log(result);
+          this.props.logout()
+          this.props.history.push('/login')
+          window.location.reload(true);
+        } catch (err) {
+          console.error(err.message);
+          this.error({ title: 'Password Changing Incompleted!', content: err.response.data.message })
+          this.props.form.resetFields()
+        }
       }
     });
   }

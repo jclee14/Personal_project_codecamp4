@@ -89,7 +89,7 @@ module.exports = (app, db) => {
         bcrypt.compare(req.body.oldPassword, req.user.password, function (err, response) {
           console.log({ response })
           if (!response) {
-            res.status(401).send({ message: 'your old password is wrong.' })
+            res.status(404).send({ message: "Your old password is wrong." })
           } else {
             targetUser.update({
               password: newHashedPassword
