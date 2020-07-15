@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Form, Icon, Input, Col, Button, Modal, Select } from 'antd';
+import { Row, Form, Icon, Input, Col, Button, Modal, Select, Divider } from 'antd';
 import logo from '../../images/dk_logo1.jpg';
 import jwtDecode from 'jwt-decode';
 import { connect } from 'react-redux';
@@ -62,8 +62,9 @@ class SignupForm extends React.Component {
               <img src={logo} alt="Logo Fakebook" style={{ height: '100%', maxHeight: '300px' }}></img>
             </Col>
           </Row> */}
-          <Row type="flex" justify="center" align="middle">
-            <h1 className="page-header">เพิ่มผู้ดูแลใหม่</h1>
+          <Row style={{ margin: "0 5%" }}>
+            <h1 className="page-header">Create New User</h1>
+            <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }} />
           </Row>
           <Row type="flex" justify="center" align="middle" style={{ marginTop: '10px' }}>
             <Col md={8} sm={12} xs={24} type="flex" justify="center" align="middle">
@@ -139,12 +140,12 @@ class SignupForm extends React.Component {
                           message: 'Please select user role!'
                         }
                       ],
-                      
+
                     })(
                       <Select
                         prefix={<Icon type="solution" style={{ color: 'rgba(0,0,0,.25)' }} />}
                         placeholder="Account Role"
-                        // onChange={onRoleChange}
+                      // onChange={onRoleChange}
                       >
                         <Option value="admin">Admin</Option>
                         <Option value="user">User</Option>

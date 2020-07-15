@@ -7,6 +7,7 @@ import { UserOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 var moment = require('moment');
 moment().format();
+let presentYear = moment().year();
 
 const { Option } = Select;
 const { confirm } = Modal;
@@ -28,9 +29,13 @@ class WorkAttendanceComp extends React.Component {
       selectProjectId: undefined,
       selectWorkerId: undefined,
       selectWorkerData: [],
-      selectDateRange: undefined,
+      selectDateRange: 'fullMonth',
       selectMonth: undefined,
-      extraDate: '',
+      selectYear: undefined,
+      isLeapYear: false,
+      displayMonth: '',
+      displayYear: '',
+      extraDate: 0,
       hrValue: {},
       totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' },
       editVisible: false
@@ -39,14 +44,23 @@ class WorkAttendanceComp extends React.Component {
   }
 
   componentDidMount() {
+    // this.setState({
+    //   user: {
+    //     id: this.props.user.id,
+    //     name: this.props.user.name
+    //   }
+    // });
+    const myMethod = async () => {
+      await this.leapYearCalculation();
+      await this.genWorkByTime();
+      await this.getProject();
+      await this.getWorker();
+    }
     this.setState({
-      user: {
-        id: this.props.user.id,
-        name: this.props.user.name
-      }
-    });
-    this.getProject();
-    this.getWorker();
+      selectYear: `${presentYear}`, displayYear: `${presentYear}`
+    },
+      myMethod
+    );
   }
 
   getProject = () => {
@@ -110,20 +124,38 @@ class WorkAttendanceComp extends React.Component {
   //   })
   // }
 
-  genWorkMonthly = async () => {
-    let { selectProjectId, selectMonth, selectDateRange } = this.state;
-    if (selectProjectId && selectMonth && selectDateRange) {
-      try {
-        let time = selectMonth.split("-");
-        let response = await Axios.get(`/worksbyproject/${selectProjectId}`);
-        let monthFilter = response.data.filter(record => record.date.split("-")[0] === time[0] && record.date.split("-")[1] === time[1]);
-        let dateFilter = monthFilter.filter(record => selectDateRange === 'firstHalf' ? record.date.split("-")[2] <= 15 : record.date.split("-")[2] > 15);
-        this.setState({
-          workList: dateFilter
-        });
-      }
-      catch (err) {
-        console.log(err)
+  genWorkByTime = async () => {
+    let { selectProjectId, selectMonth, selectDateRange, selectYear } = this.state;
+    if (selectProjectId && selectYear) {
+      if (selectProjectId && selectMonth && selectDateRange) {
+        try {
+          // let time = selectMonth.split("-");
+          let response = await Axios.get(`/worksbyproject/${selectProjectId}`);
+          let monthFilter = response.data.filter(record => record.date.split("-")[0] === selectYear && record.date.split("-")[1] === selectMonth);
+          if (selectDateRange === 'fullMonth') {
+            this.setState({
+              workList: monthFilter
+            });
+          } else {
+            let dateFilter = monthFilter.filter(record => selectDateRange === 'firstHalf' ? record.date.split("-")[2] <= 15 : record.date.split("-")[2] > 15);
+            this.setState({
+              workList: dateFilter
+            });
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      } else {
+        try {
+          let response = await Axios.get(`/worksbyproject/${selectProjectId}`);
+          let yearFilter = response.data.filter(record => record.date.split("-")[0] === selectYear);
+          this.setState({
+            workList: yearFilter
+          });
+        }
+        catch (err) {
+          console.log(err)
+        }
       }
     } else {
       console.log('data incompleted!')
@@ -133,7 +165,7 @@ class WorkAttendanceComp extends React.Component {
   handleProjectSelect = async (value) => {
     const myMethod = () => {
       this.getMember(this.state.selectProjectId);
-      this.genWorkMonthly();
+      this.genWorkByTime();
     }
     if (value) {
       this.setState({
@@ -153,16 +185,15 @@ class WorkAttendanceComp extends React.Component {
   }
 
   handleDateRangeSelect = (value) => {
-    let month = this.state.selectMonth.split("-");
+    const { selectMonth } = this.state;
     let extraD = 0;
-
-    if (value === 'secondHalf') {
-      if (month[1] === '01' || month[1] === '03' || month[1] === '05' || month[1] === '07' || month[1] === '08' || month[1] === '10' || month[1] === '12') {
-        extraD = 1;
-      } else if (month[1] === '02') {
+    if (selectMonth === '01' || selectMonth === '03' || selectMonth === '05' || selectMonth === '07' || selectMonth === '08' || selectMonth === '10' || selectMonth === '12') {
+      extraD = 1;
+    } else if (selectMonth === '02') {
+      if (this.state.isLeapYear) {
         extraD = -1;
       } else {
-        extraD = 0;
+        extraD = -2;
       }
     } else {
       extraD = 0;
@@ -174,38 +205,122 @@ class WorkAttendanceComp extends React.Component {
       extraDate: extraD,
       totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
     },
-      () => this.genWorkMonthly()
+      () => this.genWorkByTime()
     );
   }
 
-  handleMonthPick = async (date, dateString) => {
+  handleMonthPick = async (month) => {
     let extraD = 0;
-    let month;
 
-    if (dateString) {
-      month = dateString.split("-");
-    }
-
-    if (this.state.selectDateRange === 'secondHalf') {
-      if (month[1] === '01' || month[1] === '03' || month[1] === '05' || month[1] === '07' || month[1] === '08' || month[1] === '10' || month[1] === '12') {
+    if (month) {
+      if (month === '01' || month === '03' || month === '05' || month === '07' || month === '08' || month === '10' || month === '12') {
         extraD = 1;
-      } else if (month[1] === '02') {
-        extraD = -1;
+      } else if (month === '02') {
+        if (this.state.isLeapYear) {
+          extraD = -1;
+        } else {
+          extraD = -2;
+        }
       } else {
         extraD = 0;
       }
+      await this.setState({
+        selectMonth: month,
+        hrValue: {},
+        extraDate: extraD,
+        totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
+      },
+        () => this.genWorkByTime()
+      );
     } else {
-      extraD = 0;
+      await this.setState({
+        selectMonth: undefined,
+        displayMonth: '',
+        selectDateRange: 'fullMonth',
+        extraDate: 0,
+        hrValue: {},
+        totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
+      },
+        () => this.genWorkByTime()
+      );
     }
+  }
 
-    await this.setState({
-      selectMonth: dateString,
-      hrValue: {},
-      extraDate: extraD,
-      totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
-    },
-      () => this.genWorkMonthly()
-    );
+  // handleMonthPick = async (date, dateString) => {
+  //   let extraD = 0;
+  //   let month;
+
+  //   if (dateString) {
+  //     month = dateString.split("-");
+  //   }
+
+  //   if (this.state.selectDateRange === 'secondHalf') {
+  //     if (month[1] === '01' || month[1] === '03' || month[1] === '05' || month[1] === '07' || month[1] === '08' || month[1] === '10' || month[1] === '12') {
+  //       extraD = 1;
+  //     } else if (month[1] === '02') {
+  //       extraD = -1;
+  //     } else {
+  //       extraD = 0;
+  //     }
+  //   } else {
+  //     extraD = 0;
+  //   }
+
+  //   await this.setState({
+  //     selectMonth: dateString,
+  //     hrValue: {},
+  //     extraDate: extraD,
+  //     totalHr: { ot_early: '0', normal_morning: '0', ot_noon: '0', normal_afternoon: '0', ot_evening: '0', ot_night: '0' }
+  //   },
+  //     () => this.genWorkByTime()
+  //   );
+  // }
+
+  handleYearSelect = (value) => {
+    const myMethod = async () => {
+      await this.leapYearCalculation();
+      await this.genWorkByTime();
+    }
+    const { selectMonth, isLeapYear } = this.state;
+    if (value) {
+      this.setState({
+        selectYear: value,
+        displayYear: value
+      },
+        myMethod
+      );
+    } else {
+      this.setState({
+        selectYear: undefined,
+        displayYear: '',
+        extraDate: 0,
+        isLeapYear: false
+      },
+        () => this.genWorkByTime()
+      );
+    }
+  }
+
+  leapYearCalculation = () => {
+    const { selectYear, selectMonth } = this.state;
+    const myMethod = () => {
+      if (selectMonth === '02') {
+        this.setState({ extraDate: this.state.isLeapYear ? -1 : -2 });
+      }
+    }
+    if (parseInt(selectYear) % 4 === 0) {
+      if (parseInt(selectYear) % 100 === 0) {
+        if (parseInt(selectYear) % 400 === 0) {
+          this.setState({ isLeapYear: true }, myMethod);
+        } else {
+          this.setState({ isLeapYear: false }, myMethod);
+        }
+      } else {
+        this.setState({ isLeapYear: true }, myMethod);
+      }
+    } else {
+      this.setState({ isLeapYear: false }, myMethod);
+    }
   }
 
   handleWorkerSelect = (value) => {
@@ -266,16 +381,16 @@ class WorkAttendanceComp extends React.Component {
     let { selectWorkerId } = this.state;
     let targetData = this.state.workList.filter(record => record.workerId === selectWorkerId);
     let objData = {};
-    for(let dayRecord of targetData) {
+    for (let dayRecord of targetData) {
       let column = dayRecord['date'].split("-");
       let key = [parseInt(column[2]).toString() + '1', parseInt(column[2]).toString() + '2', parseInt(column[2]).toString() + '3', parseInt(column[2]).toString() + '4', parseInt(column[2]).toString() + '5', parseInt(column[2]).toString() + '6'];
-      objData = { 
-        ...objData, 
-        [key[0]]: parseFloat(dayRecord.ot_early_hr) % 1 === 0 ? Math.round(dayRecord.ot_early_hr) : parseFloat(dayRecord.ot_early_hr).toFixed(1), 
-        [key[1]]: parseFloat(dayRecord.normal_morning_hr) % 1 === 0 ? Math.round(dayRecord.normal_morning_hr) : parseFloat(dayRecord.normal_morning_hr).toFixed(1), 
-        [key[2]]: parseFloat(dayRecord.ot_noon_hr) % 1 === 0 ? Math.round(dayRecord.ot_noon_hr) : parseFloat(dayRecord.ot_noon_hr).toFixed(1), 
-        [key[3]]: parseFloat(dayRecord.normal_afternoon_hr) % 1 === 0 ? Math.round(dayRecord.normal_afternoon_hr) : parseFloat(dayRecord.normal_afternoon_hr).toFixed(1), 
-        [key[4]]: parseFloat(dayRecord.ot_evening_hr) % 1 === 0 ? Math.round(dayRecord.ot_evening_hr) : parseFloat(dayRecord.ot_evening_hr).toFixed(1), 
+      objData = {
+        ...objData,
+        [key[0]]: parseFloat(dayRecord.ot_early_hr) % 1 === 0 ? Math.round(dayRecord.ot_early_hr) : parseFloat(dayRecord.ot_early_hr).toFixed(1),
+        [key[1]]: parseFloat(dayRecord.normal_morning_hr) % 1 === 0 ? Math.round(dayRecord.normal_morning_hr) : parseFloat(dayRecord.normal_morning_hr).toFixed(1),
+        [key[2]]: parseFloat(dayRecord.ot_noon_hr) % 1 === 0 ? Math.round(dayRecord.ot_noon_hr) : parseFloat(dayRecord.ot_noon_hr).toFixed(1),
+        [key[3]]: parseFloat(dayRecord.normal_afternoon_hr) % 1 === 0 ? Math.round(dayRecord.normal_afternoon_hr) : parseFloat(dayRecord.normal_afternoon_hr).toFixed(1),
+        [key[4]]: parseFloat(dayRecord.ot_evening_hr) % 1 === 0 ? Math.round(dayRecord.ot_evening_hr) : parseFloat(dayRecord.ot_evening_hr).toFixed(1),
         [key[5]]: parseFloat(dayRecord.ot_night_hr) % 1 === 0 ? Math.round(dayRecord.ot_night_hr) : parseFloat(dayRecord.ot_night_hr).toFixed(1)
       };
     }
@@ -361,17 +476,20 @@ class WorkAttendanceComp extends React.Component {
   }
 
   handleModalValidation = async (member) => {
-    await this.setState({ selectWorkerId : member.id });
+    await this.setState({ selectWorkerId: member.id });
+    let { selectProjectId, selectWorkerId, workList, monthList, selectMonth, selectDateRange, selectYear } = this.state;
 
-    let { selectWorkerId, workList } = this.state;
-    let month = this.state.selectMonth.split("-");
     let targetAttendance = workList.filter(record => record.workerId === selectWorkerId);
     console.log(targetAttendance);
 
-    if (!this.state.selectProjectId || !this.state.selectDateRange || !this.state.selectMonth) {
-      this.showErrorModal({ title: 'Inquiry Rejected!', content: 'Please select date and month first!' });
-    } else if(targetAttendance.length < 1) {
-      this.showErrorModal({ title: 'Inquiry Rejected!', content: <div><p>Your record in {this.state.monthList[parseInt(month[1]) - 1]} is invalid!</p><p>Please create new record first</p></div> });
+    if (!selectProjectId) {
+      this.showErrorModal({ title: 'Inquiry Rejected!', content: 'Please select project first!' });
+    } else if (!selectMonth || !selectYear) {
+      this.showErrorModal({ title: 'Inquiry Rejected!', content: 'Please select month first!' });
+    } else if (selectDateRange === 'fullMonth' ) {
+      this.showErrorModal({ title: 'Inquiry Rejected!', content: 'Please select specific date range, except \'Full Month\'!' });
+    } else if (targetAttendance.length < 1) {
+      this.showErrorModal({ title: 'Inquiry Rejected!', content: <div><p>Your record in {monthList[parseInt(selectMonth) - 1]} is invalid!</p><p>Please create new record first</p></div> });
     } else {
       this.editModal(member);
     }
@@ -416,7 +534,7 @@ class WorkAttendanceComp extends React.Component {
       this.state.selectDateRange === 'firstHalf' ? startD = 0 : startD = 15;
 
       for (let c = startD; c < startD + 15 + extraDate; c++) {
-        let record = workList.filter(record => record.workerId === selectWorkerId && (c+1) === parseInt(record.date.split("-")[2]) );
+        let record = workList.filter(record => record.workerId === selectWorkerId && (c + 1) === parseInt(record.date.split("-")[2]));
         let payload = new FormData();
 
         payload.append('projectId', this.state.selectProjectId);
@@ -440,7 +558,7 @@ class WorkAttendanceComp extends React.Component {
     }
 
     this.editModelExit();
-    this.genWorkMonthly();
+    this.genWorkByTime();
   }
 
   handleResetCells = () => {
@@ -453,6 +571,54 @@ class WorkAttendanceComp extends React.Component {
   render() {
     let { selectWorkerData } = this.state;
     const { getFieldDecorator } = this.props.form;
+
+    let { selectDateRange, displayMonth, displayYear, extraDate, monthList } = this.state;
+
+    let monthRangeSelect = (
+      <Select
+        style={{ width: 150, marginRight: '10px' }}
+        placeholder={"Select month"}
+        onChange={this.handleMonthPick}
+        allowClear
+      >
+        {getMonthRange(monthList)}
+      </Select>
+    );
+
+    function getMonthRange(monthList) {
+      let monthJSX = [];
+      monthList.forEach((month, index) => {
+        let monthSeq = '';
+        if (index < 10) {
+          monthSeq += '0' + (index + 1);
+        } else {
+          monthSeq += (index + 1);
+        }
+
+        monthJSX.push(<Option value={monthSeq}>{month}</Option>)
+      });
+      return monthJSX;
+    }
+
+    let yearRangeSelect = (
+      <Select
+        style={{ width: 150 }}
+        placeholder={"Select year first"}
+        onChange={this.handleYearSelect}
+        defaultValue={presentYear}
+      >
+        {getYearRange(presentYear)}
+      </Select>
+    );
+
+    function getYearRange(presentYear) {
+      //let presentYear = moment().year();
+      let yearJSX = [];
+      for (let y = 2015; y <= presentYear + 5; y++) {
+        yearJSX.push(<Option value={y.toString()}>{y}</Option>);
+      }
+      return yearJSX;
+    }
 
     return (
       <Row style={{ margin: "0 5%" }}>
@@ -481,18 +647,21 @@ class WorkAttendanceComp extends React.Component {
                 </Select>
 
                 <Select
-                  showSearch
                   style={{ width: 200, marginRight: '10px' }}
                   placeholder={this.state.selectMonth ? "Select date range" : "Select month first"}
                   optionFilterProp="children"
                   onChange={this.handleDateRangeSelect}
                   disabled={this.state.selectMonth ? false : true}
+                  value={this.state.selectDateRange}
                 >
                   <Option value={'firstHalf'}>1st - 15th</Option>
-                  <Option value={'secondHalf'}>16th - 30th/31st</Option>
+                  <Option value={'secondHalf'}>16th - {30 + extraDate}{extraDate === 1 ? 'st' : 'th'}</Option>
+                  <Option value={'fullMonth'}>Full Month</Option>
                 </Select>
 
-                <MonthPicker placeholder="Select month" onChange={this.handleMonthPick} />
+                {/* <MonthPicker placeholder="Select month" onChange={this.handleMonthPick} /> */}
+                {monthRangeSelect}
+                {yearRangeSelect}
                 {/* <RangePicker onChange={(value) => this.handleDatePick(value)} /> */}
               </Row>
             </Col>

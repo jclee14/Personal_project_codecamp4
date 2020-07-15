@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Form, Input, Button, Modal, Radio, Upload, Icon, Select } from 'antd'
+import { Row, Col, Form, Input, Button, Modal, Radio, Upload, Icon, Select, Divider } from 'antd'
 import Axios from '../config/api.service'
 import { connect } from 'react-redux'
 
@@ -69,9 +69,6 @@ class CreateWorkerForm extends React.Component {
     }
     catch (err) {
       console.log(err.message);
-      this.setState({
-        modelVisible: false
-      });
       this.showErrorModal('Error', 'This person was already registered.');
     }
   }
@@ -159,6 +156,10 @@ class CreateWorkerForm extends React.Component {
 
     return (
       <>
+        <Row style={{ margin: "0 5%" }}>
+          <h1 className="page-header">Create New Worker</h1>
+          <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }} />
+        </Row>
         <Row>
           <Col span={20}>
             <Form

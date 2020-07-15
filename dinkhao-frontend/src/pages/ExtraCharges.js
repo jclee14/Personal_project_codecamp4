@@ -69,15 +69,33 @@ class ExtraChargesComp extends React.Component {
 
     payload.append('task', this.state.newTask);
 
-    let result = await Axios.post('/create-extracharge', payload);
-    console.log(result);
+    try {
+      let result = await Axios.post('/create-extracharge', payload);
+      console.log(result);
+      this.showSuccess('Task has been registered successfully.')
+      this.setState({
+        newTask: ''
+      });
+      this.getExtraCharges();
+      this.props.form.resetFields();
+    } catch (err) {
+      console.log(err.message);
+      this.showErrorModal('Error', 'This task was already registered.');
+    }
 
-    this.setState({
-      newTask: ''
+  }
+
+  showSuccess = (message) => {
+    Modal.success({
+      content: message,
     });
+  }
 
-    this.getExtraCharges();
-    this.props.form.resetFields();
+  showErrorModal(title, message) {
+    Modal.error({
+      title: title,
+      content: message,
+    });
   }
 
   editModal = (record) => {
@@ -101,11 +119,16 @@ class ExtraChargesComp extends React.Component {
       let payload = new FormData();
 
       payload.append('task', this.state.taskName);
-
-      let result = await Axios.put(`/update-extracharge/${this.state.extraChargeId}`, payload);
-      console.log(result);
-      this.getExtraCharges();
-      this.editModelExit();
+      try {
+        let result = await Axios.put(`/update-extracharge/${this.state.extraChargeId}`, payload);
+        console.log(result);
+        this.showSuccess('Task has been updated successfully.')
+        this.getExtraCharges();
+        this.editModelExit();
+      } catch (err) {
+        console.log(err.message);
+        this.showErrorModal('Error', 'This task was already registered.');
+      }
     }
   }
 
@@ -124,6 +147,7 @@ class ExtraChargesComp extends React.Component {
   handleDelete = async (id) => {
     let result = await Axios.delete(`/delete-extracharge/${id}`);
     console.log(result);
+    this.showSuccess('Task has been deleted successfully.')
     this.getExtraCharges();
   }
 
@@ -196,7 +220,7 @@ class ExtraChargesComp extends React.Component {
                 {getFieldDecorator('newTask', {
                   onChange: this.handleChange
                 })(
-                  <Input placeholder="ระบุรายการใหม่" />
+                  <Input placeholder="ระบุรายการหักใหม่" />
                 )}
               </Form.Item>
               <Form.Item>

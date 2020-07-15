@@ -8,6 +8,7 @@ const { SubMenu } = Menu;
 
 class SideBar extends Component {
   render() {
+    // let { handleMenuSelect, activeMenu } = this.props;
     return (
       <Sider
         width={200}
@@ -20,7 +21,7 @@ class SideBar extends Component {
         }}
       >
         <div className="logo"><a href="/"><span>DINKHAO GROUP</span></a></div>
-        <Menu theme="dark" mode="inline" style={{ backgroundColor: '#294694', color: 'white' }}>
+        <Menu theme="dark" mode="inline" style={{ backgroundColor: '#294694', color: 'white' }} >
           <Menu.Item key="1">
             <a href="/"><span className="nav-text">Homepage</span></a>
           </Menu.Item>

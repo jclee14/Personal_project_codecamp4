@@ -1,4 +1,5 @@
-const passport = require('passport')
+const passport = require('passport');
+const { Op } = require("sequelize");
 
 module.exports = (app, db) => {
 
@@ -70,8 +71,12 @@ module.exports = (app, db) => {
   app.put('/update-worker/:id', passport.authenticate('jwt', { session: false }),
     async function (req, res) {
       let targetWorker = await db.worker.findOne({ where: { id: req.params.id } })
+      let namedWorker = await db.worker.findOne({ where: { fname: req.body.fname, lname: req.body.lname, [Op.not]: [{ id: req.params.id}]}});
       if (!targetWorker) {
         res.status(404).send({ message: "The worker is not found." })
+      } else if (namedWorker) {
+        console.log("This worker is already registered!");
+        res.status(404).send({ message: "This worker is already registered!" })
       } else {
 
         let data = await db.worker.findOne({ attributes: ['image_url'], where: { id: req.params.id } });

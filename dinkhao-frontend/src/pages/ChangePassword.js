@@ -26,7 +26,7 @@ class ChangePasswordForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (values.newPassword !== values.repassword) {
-        this.error({title: 'Password Changing Incompleted!', content: 'Your new password and confirmed password is different.'});
+        this.error({ title: 'Password Changing Incompleted!', content: 'Your new password and confirmed password is different.' });
         this.props.form.resetFields();
       } else if (!err) {
         Axios.put('/change-password', {
@@ -40,7 +40,7 @@ class ChangePasswordForm extends React.Component {
           })
           .catch(err => {
             console.error(err);
-            this.error({title: 'Password Changing Incompleted!', content: 'Your old password is incorrect.'})
+            this.error({ title: 'Password Changing Incompleted!', content: 'Your old password is incorrect.' })
             this.props.form.resetFields()
           })
       }
@@ -59,11 +59,15 @@ class ChangePasswordForm extends React.Component {
     return (
       <Row>
         <Col>
-          <Row type="flex" justify="center">
+          <Row style={{ margin: "0 5%" }}>
+            <h1 className="page-header">Change Password</h1>
+            <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }} />
+          </Row>
+          {/* <Row type="flex" justify="center">
             <Col md={18} sm={20} xs={22}>
               <Divider />
             </Col>
-          </Row>
+          </Row> */}
           <Row type="flex" justify="center" align="middle" style={{ marginTop: '40px' }}>
             <Col md={8} sm={12} xs={24} type="flex" justify="center" align="middle">
               <Form onSubmit={this.handleSubmit} className="login-form" style={{ maxWidth: '400px', width: '100%' }}>
