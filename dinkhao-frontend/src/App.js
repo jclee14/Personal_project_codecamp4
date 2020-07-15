@@ -10,6 +10,17 @@ import { connect } from 'react-redux'
 const { Header, Content, Footer } = Layout;
 
 class App extends React.Component {
+  // constructor(props) {
+  //   super(props)
+  //   this.state = {
+  //     activeMenu: ['1']
+  //   }
+  // }
+
+  // handleMenuSelect = (key) => {
+  //   this.setState({ activeMenu: [key] });
+  // }
+
   render() {
     const role = this.props.user.role
     console.log(role)

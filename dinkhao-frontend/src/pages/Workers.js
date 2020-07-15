@@ -47,7 +47,7 @@ class WorkersComp extends React.Component {
   }
 
   profilePic = (worker) => {
-    const defaultAvatar = <Avatar shape="square" size={150} icon={<UserOutlined />} />;
+    const defaultAvatar = <Avatar shape="square" size={200} icon={<UserOutlined />} />;
     const customAvatar = <img className="worker-profile-avatar workerList-avatar-size" alt="profile-image" src={`http://localhost:8080/${worker.image_url}`} />;
     return (
       <Row>
@@ -119,11 +119,34 @@ class WorkersComp extends React.Component {
       payload.append('isEmployed', this.state.isEmployed);
       payload.append('photoPost', this.state.fileList[0])
 
-      let result = await Axios.put(`/update-worker/${this.state.workerId}`, payload);
-      console.log(result);
-      this.getWorker();
-      this.editModelExit();
+      try {
+        let result = await Axios.put(`/update-worker/${this.state.workerId}`, payload);
+        console.log(result);
+        this.getWorker();
+        this.editModelExit();
+        this.showSuccess('Worker has been updated successfully.');
+      }
+      catch (err) {
+        console.log(err.message);
+        this.setState({
+          modelVisible: false
+        });
+        this.showErrorModal('Error', 'This person was already registered.');
+      }
     }
+  }
+
+  showErrorModal(title, message) {
+    Modal.error({
+      title: title,
+      content: message,
+    });
+  }
+
+  showSuccess = (message) => {
+    Modal.success({
+      content: message,
+    });
   }
 
   showDelConfirm = () => {
@@ -136,6 +159,7 @@ class WorkersComp extends React.Component {
       cancelText: 'No',
       onOk: () => {
         console.log('Deleted!');
+        this.showSuccess('Worker has been deleted successfully.');
         this.handleDelete();
       },
       onCancel: () => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Form, Input, Button, DatePicker, Modal } from 'antd'
+import { Row, Col, Form, Input, Button, DatePicker, Modal, Divider } from 'antd'
 import Axios from '../config/api.service'
 import { connect } from 'react-redux'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -135,6 +135,10 @@ class CreateProjectForm extends React.Component {
 
     return (
       <>
+        <Row style={{ margin: "0 5%" }}>
+          <h1 className="page-header">Create New Project</h1>
+          <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }} />
+        </Row>
         <Row>
           <Col span={20}>
             <Form
@@ -143,6 +147,7 @@ class CreateProjectForm extends React.Component {
             >
               <Form.Item label="Project Name">
                 {getFieldDecorator('projectName', {
+                  rules: [{ required: true, message: 'Please enter project\'s name' }],
                   onChange: this.handleChange
                 })(
                   <Input />
@@ -151,6 +156,7 @@ class CreateProjectForm extends React.Component {
 
               <Form.Item label="Location">
                 {getFieldDecorator('projectLocation', {
+                  rules: [{ required: true, message: 'Please enter project\'s location' }],
                   onChange: this.handleChange
                 })(
                   <Input />
@@ -158,14 +164,18 @@ class CreateProjectForm extends React.Component {
               </Form.Item>
 
               <Form.Item label="Start Date">
-                {getFieldDecorator('projectStartDate')(
-                  <DatePicker onChange={(value) => this.handleDatePick("projectStartDate", value)} />
+                {getFieldDecorator('projectStartDate', {
+                  rules: [{ required: true, message: 'Please enter project\'s start date' }],
+                })(
+                  <DatePicker onChange={(value) => this.handleDatePick("projectStartDate", value)} allowClear={false} />
                 )}
               </Form.Item>
 
               <Form.Item label="End Date">
-                {getFieldDecorator('projectEndDate')(
-                  <DatePicker onChange={(value) => this.handleDatePick("projectEndDate", value)} />
+                {getFieldDecorator('projectEndDate', {
+                  rules: [{ required: true, message: 'Please enter project\'s end date' }],
+                })(
+                  <DatePicker onChange={(value) => this.handleDatePick("projectEndDate", value)} allowClear={false} />
                 )}
               </Form.Item>
 

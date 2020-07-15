@@ -41,12 +41,15 @@ class WorkerAccountingComp extends React.Component {
   componentDidMount() {
     this.getProject();
     this.getWorker();
+    const myMethod = async () => {
+      await this.leapYearCalculation();
+      await this.genWorkByTime();
+    }
 
     this.setState({
       selectYear: `${presentYear}`, displayYear: `${presentYear}`
     },
-      () => this.leapYearCalculation(),
-      () => this.genWorkByTime()
+      myMethod
     );
   }
 
@@ -103,7 +106,7 @@ class WorkerAccountingComp extends React.Component {
       this.getExpenseSummary();
       this.getWorkerId();
     }
-
+    console.log('hiii')
     if (selectYear) {
       if (selectMonth && selectDateRange) {
         try {
@@ -129,6 +132,7 @@ class WorkerAccountingComp extends React.Component {
           console.log(err)
         }
       } else {
+        console.log('heelloo')
         try {
           let response = await Axios.get(`/works`);
           let yearFilter = response.data.filter(record => record.date.split("-")[0] === selectYear);

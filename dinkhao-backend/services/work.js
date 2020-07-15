@@ -44,7 +44,7 @@ module.exports = (app, db) => {
         let ot_day_earn = (current_rate / 8) * otDayHR;
         let ot_night_earn = ((current_rate / 8) * otNightHR) * 1.5;
 
-        let wage_earning = Math.round(normal_earn + ot_day_earn + ot_night_earn);
+        let wage_earning = Math.round(normal_earn) + Math.round(ot_day_earn) + Math.round(ot_night_earn);
 
         try {
           let result = await db.work.create({

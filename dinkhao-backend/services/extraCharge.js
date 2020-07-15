@@ -1,4 +1,5 @@
-const passport = require('passport')
+const passport = require('passport');
+const { Op } = require("sequelize");
 
 module.exports = (app, db) => {
 
@@ -36,8 +37,11 @@ module.exports = (app, db) => {
   app.put('/update-extracharge/:id', passport.authenticate('jwt', { session: false }),
     async function (req, res) {
       let targetExtraCharge = await db.extracharge.findOne({ where: { id: req.params.id } });
+      let existedTask = await db.extracharge.findOne({ where: { task: req.body.task, [Op.not]: [{ id: req.params.id}]}});
       if (!targetExtraCharge) {
         res.status(404).send({ message: "The task is not found!" })
+      } else if (existedTask) {
+        res.status(404).send({ message: "This task is already recorded!" })
       } else {
         try {
           let result = await db.extracharge.update(

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Modal, Form, Input, DatePicker } from 'antd'
+import { Table, Modal, Form, Input, DatePicker, Divider } from 'antd'
 import Axios from '../config/api.service'
 import { connect } from 'react-redux'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -68,11 +68,34 @@ class ProjectsComp extends React.Component {
       payload.append('start_date', this.state.projectStartDate);
       payload.append('end_date', this.state.projectEndDate);
 
-      let updateResult = await Axios.put(`/update-project/${this.state.projectId}`, payload);
-      console.log(updateResult);
-      this.getProject();
-      this.editModelExit();
+      try {
+        let updateResult = await Axios.put(`/update-project/${this.state.projectId}`, payload);
+        console.log(updateResult);
+        this.showSuccess();
+        this.getProject();
+        this.editModelExit();
+      }
+      catch (err) {
+        console.log(err.response);
+        this.setState({
+          modelVisible: false
+        });
+        this.showErrorModal(err.response.data.topic, err.response.data.message);
+      }
     }
+  }
+
+  showSuccess = () => {
+    Modal.success({
+      content: 'Project has been updated successfully.',
+    });
+  }
+
+  showErrorModal(title = "Error", message) {
+    Modal.error({
+      title: title,
+      content: message,
+    });
   }
 
   editModelExit = () => {
@@ -168,6 +191,8 @@ class ProjectsComp extends React.Component {
 
     return (
       <>
+        <h1 className="page-header">Project Database</h1>
+        <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }} />
         <Table dataSource={this.state.projectList} columns={columns} />
         <Modal
           title="Edit Project"
