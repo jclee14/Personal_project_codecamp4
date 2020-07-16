@@ -308,7 +308,7 @@ class GeneralAccountingComp extends React.Component {
         key: 'workerAmount',
       },
       {
-        title: 'Monthly Expense',
+        title: 'Expense',
         dataIndex: 'projectExpense',
         key: 'projectExpense',
       }
